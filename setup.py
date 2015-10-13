@@ -17,8 +17,7 @@ from codecs import open
 from setuptools import setup
 
 
-# TODO: convert md to rst.
-long_description = open('README.md', 'r', encoding='utf-8').read()
+long_description = open('README.rst', 'r', encoding='utf-8').read()
 
 
 setup(
@@ -29,7 +28,7 @@ setup(
     description='Sane defaults for Flask security.',
     long_description=long_description,
 
-    url='https://github.com/jonparrott/talisman',
+    url='https://github.com/GoogleCloudPlatorm/talisman',
 
     author='Jon Wayne Parrott',
     author_email='jonwayne@google.com',
