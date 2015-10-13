@@ -1,7 +1,6 @@
-# Talisman for Flask
+# Talisman: HTTP security headers for Flask
 
-Talisman is a small Flask extension that configures a few simple countermeasures
-against common web application security issues.
+Talisman is a small Flask extension that handles setting HTTP headers that can help protect against a few common web application security issues.
 
 The default configuration:
 
@@ -37,6 +36,27 @@ Talisman(app)
 * `content_security_policy`, default `default-src: 'self'`, see the [section below](#content-security-policy).
 * `session_cookie_secure`, default `True`, set the session cookie to `secure`, preventing it from being sent over plain `http`.
 * `session_cookie_http_only`, default `True`, set the session cookie to `httponly`, preventing it from being read by JavaScript.
+
+### Per-view options
+
+Sometimes you want to change the policy for a specific view. The `frame_options`, `frame_options_allow_from`, and `content_security_policy` options can be changed on a per-view basis.
+
+```python
+from flask import Flask
+from talisman import Talisman, ALLOW_FROM
+
+app = Flask(__name__)
+talisman = Talisman(app)
+
+@app.route('/normal')
+def normal():
+    return 'Normal'
+
+@app.route('/embeddable')
+@talisman(frame_options=ALLOW_FROM, frame_options_allow_from='*')
+def embeddable():
+    return 'Embeddable'
+```
 
 ## Content Security Policy
 
@@ -123,3 +143,11 @@ csp = {
 ```
 
 Note that this example doesn't specify a `script-src`; with the example CSP, this site uses the setting specified by the `default-src` directive, which means that scripts can be loaded only from the originating server.
+
+## Disclaimer
+
+This is not an official Google product, experimental or otherwise. It just code that happens to be owned by Google.
+
+There is no silver bullet for web application security. Talisman can help, but security is more than just setting a few headers. Any public-facing web application should have a comprehensive approach to security.
+
+## Contributing

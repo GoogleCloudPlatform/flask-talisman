@@ -112,11 +112,28 @@ class TestTalismanExtension(unittest.TestCase):
             'example.com'
         ]
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertEqual(
-            response.headers['Content-Security-Policy'],
-            'default-src \'self\'; image-src \'self\' example.com')
+        csp = response.headers['Content-Security-Policy']
+        self.assertTrue('default-src \'self\'' in csp)
+        self.assertTrue('image-src \'self\' example.com' in csp)
+
+        # sting policy
+        self.talisman.content_security_policy = 'default-src example.com'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertEqual(response.headers['Content-Security-Policy'],
+                         'default-src example.com')
 
         # no policy
         self.talisman.content_security_policy = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertTrue('Content-Security-Policy' not in response.headers)
+
+    def testDecorator(self):
+
+        @self.app.route('/nocsp')
+        @self.talisman(content_security_policy=None)
+        def nocsp():
+            return 'Hello, world'
+
+        response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue('Content-Security-Policy' not in response.headers)
+        self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')

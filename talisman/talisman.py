@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from functools import wraps
+
 import flask
 from six import iteritems, string_types
+from werkzeug.local import Local
 
 
 DENY = 'DENY'
@@ -39,11 +42,17 @@ GOOGLE_CSP_POLICY = {
     'default-src': '\'self\' *.gstatic.com',
 }
 
+_sentinel = object()
+
 
 class Talisman(object):
-    def __init__(self, app=None):
+    """
+    Talisman is a Flask extension for HTTP security headers.
+    """
+
+    def __init__(self, app=None, **kwargs):
         if app is not None:
-            self.init_app(app)
+            self.init_app(app, **kwargs)
 
     def init_app(
             self,
@@ -58,6 +67,32 @@ class Talisman(object):
             content_security_policy=DEFAULT_CSP_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True):
+        """
+        Initialization.
+
+        Args:
+            app: A Flask application.
+            force_https: Redirects non-http requests to https, disabled in
+                debug mode.
+            force_https_permanent: Uses 301 instead of 302 redirects.
+            frame_options: Sets the X-Frame-Options header, defaults to
+                SAMEORIGIN.
+            frame_options_allow_from: Used when frame_options is set to
+                ALLOW_FROM and is a string of domains to allow frame embedding.
+            strict_transport_security: Sets HSTS headers.
+            strict_transport_security_max_age: How long HSTS headers are
+                honored by the browser.
+            strict_transport_security_include_subdomain: Whether to include
+                all subdomains when setting HSTS.
+            content_security_policy: A string or dictionary describing the
+                content security policy for the response.
+            session_cookie_secure: Forces the session cookie to only be sent
+                over https. Disabled in debug mode.
+            session_cookie_http_only: Prevents JavaScript from reading the
+                session cookie.
+
+        See README.rst for a detailed description of each option.
+        """
 
         self.force_https = force_https
         self.force_https_permanent = force_https_permanent
@@ -82,18 +117,32 @@ class Talisman(object):
 
         self.app = app
         app.before_request(self._force_https)
-        app.after_request(self._after_request)
+        app.after_request(self._set_response_headers)
 
-    def _after_request(self, response):
-        self._set_response_headers(response)
-        return response
+        self.local_options = Local()
+        app.before_request(lambda: self._update_local_options())
+
+    def _update_local_options(
+            self,
+            frame_options=_sentinel,
+            frame_options_allow_from=_sentinel,
+            content_security_policy=_sentinel):
+        """Updates view-local options with defaults or specified values."""
+        setattr(self.local_options, 'frame_options',
+                frame_options if frame_options is not _sentinel
+                else self.frame_options)
+        setattr(self.local_options, 'frame_options_allow_from',
+                frame_options_allow_from if frame_options_allow_from
+                is not _sentinel else self.frame_options_allow_from)
+        setattr(self.local_options, 'content_security_policy',
+                content_security_policy if content_security_policy
+                is not _sentinel else self.content_security_policy)
 
     def _force_https(self):
         """Redirect any non-https requests to https.
 
         Based largely on flask-sslify.
         """
-
         criteria = [
             self.app.debug,
             flask.request.is_secure,
@@ -110,37 +159,42 @@ class Talisman(object):
                 return r
 
     def _set_response_headers(self, response):
+        """Applies all configured headers to the given response."""
         self._set_frame_options_headers(response.headers)
         self._set_content_security_policy_headers(response.headers)
         self._set_hsts_headers(response.headers)
+        return response
 
     def _set_frame_options_headers(self, headers):
-        headers['X-Frame-Options'] = self.frame_options
+        headers['X-Frame-Options'] = self.local_options.frame_options
 
-        if self.frame_options == ALLOW_FROM:
+        if self.local_options.frame_options == ALLOW_FROM:
             headers['X-Frame-Options'] += " {}".format(
-                self.frame_options_allow_from)
+                self.local_options.frame_options_allow_from)
 
     def _set_content_security_policy_headers(self, headers):
         headers['X-XSS-Protection'] = '1; mode=block'
         headers['X-Content-Type-Options'] = 'nosniff'
 
-        if not self.content_security_policy:
+        if not self.local_options.content_security_policy:
             return
 
-        policies = [
-            '{} {}'.format(
-                k,
-                ' '.join(v) if not isinstance(v, string_types) else v)
-            for (k, v)
-            in iteritems(self.content_security_policy)
-        ]
+        policy = self.local_options.content_security_policy
 
-        value = '; '.join(policies)
+        if not isinstance(policy, string_types):
+            policies = [
+                '{} {}'.format(
+                    k,
+                    ' '.join(v) if not isinstance(v, string_types) else v)
+                for (k, v)
+                in iteritems(policy)
+            ]
 
-        headers['Content-Security-Policy'] = value
+            policy = '; '.join(policies)
+
+        headers['Content-Security-Policy'] = policy
         # IE 10-11, Older Firefox.
-        headers['X-Content-Security-Policy'] = value
+        headers['X-Content-Security-Policy'] = policy
 
     def _set_hsts_headers(self, headers):
         if not self.strict_transport_security or not flask.request.is_secure:
@@ -154,3 +208,39 @@ class Talisman(object):
         value += '; preload'
 
         headers['Strict-Transport-Security'] = value
+
+    def __call__(
+            self,
+            frame_options=_sentinel,
+            frame_options_allow_from=_sentinel,
+            content_security_policy=_sentinel):
+        """Use talisman as a decorator to configure options for a particular
+        view.
+
+        Only frame_options, frame_options_allow_from, and
+        content_security_policy can be set on a per-view basis.
+
+        Example:
+
+            app = Flask(__name__)
+            talisman = Talisman(app)
+
+            @app.route('/normal')
+            def normal():
+                return 'Normal'
+
+            @app.route('/embeddable')
+            @talisman(frame_options=ALLOW_FROM, frame_options_allow_from='*')
+            def embeddable():
+                return 'Embeddable'
+        """
+        def decorator(f):
+            @wraps(f)
+            def decorated_function(*args, **kwargs):
+                self._update_local_options(
+                    frame_options=frame_options,
+                    frame_options_allow_from=frame_options_allow_from,
+                    content_security_policy=content_security_policy)
+                return f(*args, **kwargs)
+            return decorated_function
+        return decorator
