@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <title>Talisman sample app</title>
+</head>
+<body>
+
+<h1>Talisman + Seasurf Sample</h1>
+
+{% if message: %}
+<h3>Your message:</h3>
+<div>{{message}}</div>
+{% endif %}
+
+<form method="POST">
+  <input type="hidden" name="_csrf_token" value="{{csrf_token()}}">
+  <textarea name="message" placeholder="Enter message..."></textarea>
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

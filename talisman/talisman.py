@@ -108,19 +108,17 @@ class Talisman(object):
 
         self.content_security_policy = content_security_policy.copy()
 
-        if session_cookie_secure:
-            if not app.debug:
-                app.config['SESSION_COOKIE_SECURE'] = True
+        self.session_cookie_secure = session_cookie_secure
 
         if session_cookie_http_only:
             app.config['SESSION_COOKIE_HTTPONLY'] = True
 
         self.app = app
+        self.local_options = Local()
+
+        app.before_request(self._update_local_options)
         app.before_request(self._force_https)
         app.after_request(self._set_response_headers)
-
-        self.local_options = Local()
-        app.before_request(lambda: self._update_local_options())
 
     def _update_local_options(
             self,
@@ -143,6 +141,11 @@ class Talisman(object):
 
         Based largely on flask-sslify.
         """
+
+        if self.session_cookie_secure:
+            if not self.app.debug:
+                self.app.config['SESSION_COOKIE_SECURE'] = True
+
         criteria = [
             self.app.debug,
             flask.request.is_secure,

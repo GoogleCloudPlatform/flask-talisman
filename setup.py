@@ -57,5 +57,5 @@ setup(
 
     packages=['talisman'],
 
-    install_requires=['six'],
+    install_requires=['six>=1.9.0'],
 )
