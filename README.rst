@@ -55,6 +55,9 @@ Install via `pip <https://pypi.python.org/pypi/pip>`__:
     app = Flask(__name__)
     Talisman(app)
 
+
+There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/example_app>`__.
+
 Options
 -------
 
