@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from flask import Flask, request, render_template
+
+from flask import Flask, render_template, request
 from flask.ext.seasurf import SeaSurf
 from talisman import Talisman
 
