@@ -25,10 +25,10 @@ setup(
 
     version='0.1.0',
 
-    description='Sane defaults for Flask security.',
+    description='HTTP security headers for Flask.',
     long_description=long_description,
 
-    url='https://github.com/GoogleCloudPlatorm/talisman',
+    url='https://github.com/GoogleCloudPlatform/flask-talisman',
 
     author='Jon Wayne Parrott',
     author_email='jonwayne@google.com',
@@ -48,6 +48,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
 
         'Operating System :: POSIX',
         'Operating System :: MacOS',

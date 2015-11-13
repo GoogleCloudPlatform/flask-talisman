@@ -240,5 +240,7 @@ Licensing
 .. _CONTRIBUTING.md: https://github.com/GoogleCloudPlatform/talisman/blob/master/CONTRIBUTING.md
 .. |Build Status| image:: https://travis-ci.org/GoogleCloudPlatform/talisman.svg
    :target: https://travis-ci.org/GoogleCloudPlatform/talisman
+.. |Coverage Status| image:: https://coveralls.io/repos/GoogleCloudPlatform/flask-talisman/badge.svg
+   :target: https://coveralls.io/r/GoogleCloudPlatform/flask-talisman
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/talisman.svg
    :target: https://pypi.python.org/pypi/talisman

@@ -1,3 +1,12 @@
-FROM google/python-runtime
+FROM gcr.io/google_appengine/python
+RUN virtualenv /env -p python3.4
 
-ENTRYPOINT /env/bin/gunicorn -c gunicorn.conf.py -b 0.0.0.0:8080 main:app
+# Set virtualenv environment variables. This is equivalent to running
+# source /env/bin/activate
+ENV VIRTUAL_ENV /env
+ENV PATH /env/bin:$PATH
+
+ADD requirements.txt /app/
+RUN pip install -r requirements.txt
+ADD . /app/
+CMD gunicorn -c gunicorn.conf.py -b :$PORT main:app
