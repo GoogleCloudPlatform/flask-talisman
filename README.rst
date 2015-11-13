@@ -236,10 +236,10 @@ Licensing
 
 - Apache 2.0 - See `LICENSE`_
 
-.. _LICENSE: https://github.com/GoogleCloudPlatform/talisman/blob/master/LICENSE
-.. _CONTRIBUTING.md: https://github.com/GoogleCloudPlatform/talisman/blob/master/CONTRIBUTING.md
-.. |Build Status| image:: https://travis-ci.org/GoogleCloudPlatform/talisman.svg
-   :target: https://travis-ci.org/GoogleCloudPlatform/talisman
+.. _LICENSE: https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/LICENSE
+.. _CONTRIBUTING.md: https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/CONTRIBUTING.md
+.. |Build Status| image:: https://travis-ci.org/GoogleCloudPlatform/flask-talisman.svg
+   :target: https://travis-ci.org/GoogleCloudPlatform/flask-talisman
 .. |Coverage Status| image:: https://coveralls.io/repos/GoogleCloudPlatform/flask-talisman/badge.svg
    :target: https://coveralls.io/r/GoogleCloudPlatform/flask-talisman
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/talisman.svg
