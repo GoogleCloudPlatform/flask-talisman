@@ -33,7 +33,7 @@ The default configuration:
    below <#content-security-policy>`__ on configuring this.
 
 In addition to Talisman, you **should always use a cross-site request
-forgery (CSRF) library**. I highly recommend
+forgery (CSRF) library**. It's highly recommended to use
 `Flask-SeaSurf <https://flask-seasurf.readthedocs.org/en/latest/>`__,
 which is based on Django's excellent library.
 
@@ -68,7 +68,7 @@ Options
 -  ``frame_options``, default ``SAMEORIGIN``, can be ``SAMEORIGIN``,
    ``DENY``, or ``ALLOWFROM``.
 -  ``frame_options_allow_from``, default ``None``, a string indicating
-   the domains that arrow allowed to embed the site via iframe.
+   the domains that are allowed to embed the site via iframe.
 -  ``strict_transport_security``, default ``True``, whether to send HSTS
    headers.
 -  ``strict_transport_security_max_age``, default ``ONE_YEAR_IN_SECS``,
@@ -109,9 +109,9 @@ Sometimes you want to change the policy for a specific view. The
 Content Security Policy
 -----------------------
 
-The default content security policy is extremely strict, and will
+The default content security policy is extremely strict and will
 prevent loading any resources that are not in the same domain as the
-application.
+application. Most web applications will need to change this policy.
 
 A slightly more permissive policy is available at
 ``talisman.GOOGLE_CSP_POLICY``, which allows loading Google-hosted JS
@@ -169,7 +169,7 @@ specific server that hosts trusted code.
         'script-src': 'userscripts.example.com'
     }
 
-Here, by default, content is only permitted from the document's origin,
+In this example content is only permitted from the document's origin
 with the following exceptions:
 
 -  Images may loaded from anywhere (note the ``*`` wildcard).
