@@ -90,6 +90,9 @@ Options
     the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
     to ease deployment by disabling the policy enforcement by the browser,
     requires ``report-uri`` parameter passed to ``content_security_policy``
+-  ``content_security_policy_report_uri``, default ``None``, a string
+   indicating the report URI used for `CSP violation reports
+   <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_CSP_violation_reports>`_
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session

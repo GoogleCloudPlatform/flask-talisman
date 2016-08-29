@@ -129,16 +129,37 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse('Content-Security-Policy' in response.headers)
 
+    def testContentSecurityPolicyOptionsReport(self):
         # report-only policy
-        self.talisman.content_security_policy = DEFAULT_CSP_POLICY
         self.talisman.content_security_policy_report_only = True
+        self.talisman.content_security_policy_report_uri = \
+            'https://example.com'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertTrue(
             'Content-Security-Policy-Report-Only' in response.headers)
         self.assertTrue(
             'X-Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            'report-uri'
+            in response.headers['Content-Security-Policy-Report-Only'])
         self.assertFalse('Content-Security-Policy' in response.headers)
         self.assertFalse('X-Content-Security-Policy' in response.headers)
+
+        override_report_uri = 'https://report-uri.io/'
+        self.talisman.content_security_policy = {
+            'report-uri': override_report_uri,
+        }
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue(
+            'Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            override_report_uri
+            in response.headers['Content-Security-Policy-Report-Only']
+        )
+
+        # exception on missing report-uri when report-only
+        self.assertRaises(ValueError, Talisman, self.app,
+                          content_security_policy_report_only=True)
 
     def testDecorator(self):
 

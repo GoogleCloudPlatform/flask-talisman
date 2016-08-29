@@ -65,6 +65,7 @@ class Talisman(object):
             strict_transport_security_max_age=ONE_YEAR_IN_SECS,
             strict_transport_security_include_subdomains=True,
             content_security_policy=DEFAULT_CSP_POLICY,
+            content_security_policy_report_uri=None,
             content_security_policy_report_only=False,
             session_cookie_secure=True,
             session_cookie_http_only=True):
@@ -87,6 +88,8 @@ class Talisman(object):
                 all subdomains when setting HSTS.
             content_security_policy: A string or dictionary describing the
                 content security policy for the response.
+            content_security_policy_report_uri: A string indicating the report
+                URI used for CSP violation reports
             content_security_policy_report_only: Whether to set the CSP header
                 as "report-only", which disables the enforcement by the browser
                 and requires a "report-uri" parameter with a backend to receive
@@ -112,8 +115,15 @@ class Talisman(object):
             strict_transport_security_include_subdomains
 
         self.content_security_policy = content_security_policy.copy()
+        self.content_security_policy_report_uri = \
+            content_security_policy_report_uri
         self.content_security_policy_report_only = \
             content_security_policy_report_only
+        if self.content_security_policy_report_only and \
+                self.content_security_policy_report_uri is None:
+            raise ValueError(
+                'The parameter content_security_policy_report_only '
+                'reqires setting content_security_policy_report_uri, too.')
 
         self.session_cookie_secure = session_cookie_secure
 
@@ -202,6 +212,10 @@ class Talisman(object):
             ]
 
             policy = '; '.join(policies)
+
+        if self.content_security_policy_report_uri and \
+                'report-uri' not in policy:
+            policy += '; report-uri ' + self.content_security_policy_report_uri
 
         csp_header = 'Content-Security-Policy'
         if self.content_security_policy_report_only:
