@@ -76,19 +76,19 @@ class TestTalismanExtension(unittest.TestCase):
 
         # No HSTS headers for non-ssl requests
         response = self.client.get('/')
-        self.assertTrue('Strict-Transport-Security' not in response.headers)
+        self.assertFalse('Strict-Transport-Security' in response.headers)
 
         # Secure request with HSTS off
         self.talisman.strict_transport_security = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Strict-Transport-Security' not in response.headers)
+        self.assertFalse('Strict-Transport-Security' in response.headers)
 
         # No subdomains
         self.talisman.strict_transport_security = True
         self.talisman.strict_transport_security_include_subdomains = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue(
-            'includeSubDomains' not in
+        self.assertFalse(
+            'includeSubDomains' in
             response.headers['Strict-Transport-Security'])
 
     def testFrameOptions(self):
@@ -118,7 +118,7 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertTrue('default-src \'self\'' in csp)
         self.assertTrue('image-src \'self\' example.com' in csp)
 
-        # sting policy
+        # string policy
         self.talisman.content_security_policy = 'default-src example.com'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.headers['Content-Security-Policy'],
@@ -127,7 +127,7 @@ class TestTalismanExtension(unittest.TestCase):
         # no policy
         self.talisman.content_security_policy = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Content-Security-Policy' not in response.headers)
+        self.assertFalse('Content-Security-Policy' in response.headers)
 
         # report-only policy
         self.talisman.content_security_policy = DEFAULT_CSP_POLICY
@@ -148,5 +148,5 @@ class TestTalismanExtension(unittest.TestCase):
             return 'Hello, world'
 
         response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Content-Security-Policy' not in response.headers)
+        self.assertFalse('Content-Security-Policy' in response.headers)
         self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')
