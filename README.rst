@@ -25,6 +25,12 @@ The default configuration:
    `X-Frame-Options <https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options>`_
    to ``SAMEORIGIN`` to avoid
    `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`_.
+-  Sets `X-XSS-Protection
+   <http://msdn.microsoft.com/en-us/library/dd565647(v=vs.85).aspx>`_ to enable
+   a cross site scripting filter for IE/Chrome.
+-  Sets `X-Content-Type-Options
+   <https://msdn.microsoft.com/library/gg622941(v=vs.85).aspx>`_ to prevents
+   content type sniffing for IE >= 9.
 -  Sets a strict `Content Security
    Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`_
    of ``default-src: 'self'``. This is intended to almost completely
