@@ -41,6 +41,7 @@ class TestTalismanExtension(unittest.TestCase):
             'max-age=31556926; includeSubDomains; preload',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
+            'X-Download-Options': 'noopen',
             'Content-Security-Policy': 'default-src \'self\'',
             'X-Content-Security-Policy': 'default-src \'self\''
         }

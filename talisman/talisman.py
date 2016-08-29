@@ -178,6 +178,7 @@ class Talisman(object):
     def _set_content_security_policy_headers(self, headers):
         headers['X-XSS-Protection'] = '1; mode=block'
         headers['X-Content-Type-Options'] = 'nosniff'
+        headers['X-Download-Options'] = 'noopen'
 
         if not self.local_options.content_security_policy:
             return
