@@ -65,6 +65,7 @@ class Talisman(object):
             strict_transport_security_max_age=ONE_YEAR_IN_SECS,
             strict_transport_security_include_subdomains=True,
             content_security_policy=DEFAULT_CSP_POLICY,
+            content_security_policy_report_only=False,
             session_cookie_secure=True,
             session_cookie_http_only=True):
         """
@@ -86,6 +87,10 @@ class Talisman(object):
                 all subdomains when setting HSTS.
             content_security_policy: A string or dictionary describing the
                 content security policy for the response.
+            content_security_policy_report_only: Whether to set the CSP header
+                as "report-only", which disables the enforcement by the browser
+                and requires a "report-uri" parameter with a backend to receive
+                the POST data
             session_cookie_secure: Forces the session cookie to only be sent
                 over https. Disabled in debug mode.
             session_cookie_http_only: Prevents JavaScript from reading the
@@ -101,12 +106,14 @@ class Talisman(object):
         self.frame_options_allow_from = frame_options_allow_from
 
         self.strict_transport_security = strict_transport_security
-        self.strict_transport_security_max_age =\
+        self.strict_transport_security_max_age = \
             strict_transport_security_max_age
-        self.strict_transport_security_include_subdomains =\
+        self.strict_transport_security_include_subdomains = \
             strict_transport_security_include_subdomains
 
         self.content_security_policy = content_security_policy.copy()
+        self.content_security_policy_report_only = \
+            content_security_policy_report_only
 
         self.session_cookie_secure = session_cookie_secure
 
@@ -196,9 +203,13 @@ class Talisman(object):
 
             policy = '; '.join(policies)
 
-        headers['Content-Security-Policy'] = policy
+        csp_header = 'Content-Security-Policy'
+        if self.content_security_policy_report_only:
+            csp_header += '-Report-Only'
+
+        headers[csp_header] = policy
         # IE 10-11, Older Firefox.
-        headers['X-Content-Security-Policy'] = policy
+        headers['X-' + csp_header] = policy
 
     def _set_hsts_headers(self, headers):
         if not self.strict_transport_security or not flask.request.is_secure:

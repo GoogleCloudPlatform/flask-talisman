@@ -16,7 +16,7 @@ import unittest
 
 import flask
 from six import iteritems
-from talisman import ALLOW_FROM, DENY, Talisman
+from talisman import ALLOW_FROM, DEFAULT_CSP_POLICY, DENY, Talisman
 
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
@@ -128,6 +128,17 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertTrue('Content-Security-Policy' not in response.headers)
+
+        # report-only policy
+        self.talisman.content_security_policy = DEFAULT_CSP_POLICY
+        self.talisman.content_security_policy_report_only = True
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue(
+            'Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            'X-Content-Security-Policy-Report-Only' in response.headers)
+        self.assertFalse('Content-Security-Policy' in response.headers)
+        self.assertFalse('X-Content-Security-Policy' in response.headers)
 
     def testDecorator(self):
 

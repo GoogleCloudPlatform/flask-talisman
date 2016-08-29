@@ -86,6 +86,10 @@ Options
    whether subdomains should also use HSTS.
 -  ``content_security_policy``, default ``default-src: 'self'``, see the
    `section below <#content-security-policy>`_.
+-  ``content_security_policy_report_only``, default ``True``, whether to set
+    the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
+    to ease deployment by disabling the policy enforcement by the browser,
+    requires ``report-uri`` parameter passed to ``content_security_policy``
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
