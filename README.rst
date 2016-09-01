@@ -98,6 +98,9 @@ Options
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
    cookie to ``httponly``, preventing it from being read by JavaScript.
+-  ``force_file_save``, default ``False``, whether to set the
+   ``X-Download-Options`` header to ``noopen`` to prevent IE >= 8 to from
+   opening file downloads directly and only save them instead
 
 Per-view options
 ~~~~~~~~~~~~~~~~

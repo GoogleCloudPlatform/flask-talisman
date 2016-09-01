@@ -59,6 +59,7 @@ class Talisman(object):
             app,
             force_https=True,
             force_https_permanent=False,
+            force_file_save=False,
             frame_options=SAMEORIGIN,
             frame_options_allow_from=None,
             strict_transport_security=True,
@@ -98,6 +99,8 @@ class Talisman(object):
                 over https. Disabled in debug mode.
             session_cookie_http_only: Prevents JavaScript from reading the
                 session cookie.
+            force_file_save: Prevents the user from opening a file download
+                directly on >= IE 8
 
         See README.rst for a detailed description of each option.
         """
@@ -130,6 +133,8 @@ class Talisman(object):
 
         if session_cookie_http_only:
             app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+        self.force_file_save = force_file_save
 
         self.app = app
         self.local_options = Local()
@@ -196,7 +201,9 @@ class Talisman(object):
     def _set_content_security_policy_headers(self, headers):
         headers['X-XSS-Protection'] = '1; mode=block'
         headers['X-Content-Type-Options'] = 'nosniff'
-        headers['X-Download-Options'] = 'noopen'
+
+        if self.force_file_save:
+            headers['X-Download-Options'] = 'noopen'
 
         if not self.local_options.content_security_policy:
             return
