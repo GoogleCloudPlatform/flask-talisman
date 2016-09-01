@@ -86,10 +86,11 @@ Options
    whether subdomains should also use HSTS.
 -  ``content_security_policy``, default ``default-src: 'self'``, see the
    `section below <#content-security-policy>`_.
--  ``content_security_policy_report_only``, default ``True``, whether to set
-    the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
-    to ease deployment by disabling the policy enforcement by the browser,
-    requires ``report-uri`` parameter passed to ``content_security_policy``
+-  ``content_security_policy_report_only``, default ``False``, whether to set
+   the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
+   to ease deployment by disabling the policy enforcement by the browser,
+   requires passing a value with the ``content_security_policy_report_uri``
+   parameter
 -  ``content_security_policy_report_uri``, default ``None``, a string
    indicating the report URI used for `CSP violation reports
    <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_CSP_violation_reports>`_

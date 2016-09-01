@@ -122,8 +122,9 @@ class Talisman(object):
         if self.content_security_policy_report_only and \
                 self.content_security_policy_report_uri is None:
             raise ValueError(
-                'The parameter content_security_policy_report_only '
-                'reqires setting content_security_policy_report_uri, too.')
+                'Setting content_security_policy_report_only to True also '
+                'requires a URI to be specified in '
+                'content_security_policy_report_uri')
 
         self.session_cookie_secure = session_cookie_secure
 
