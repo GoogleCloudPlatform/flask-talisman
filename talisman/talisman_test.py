@@ -16,7 +16,7 @@ import unittest
 
 import flask
 from six import iteritems
-from talisman import ALLOW_FROM, DEFAULT_CSP_POLICY, DENY, Talisman
+from talisman import ALLOW_FROM, DENY, Talisman
 
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
