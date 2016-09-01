@@ -4,10 +4,12 @@ sudo: false
 install:
 - pip install tox coveralls
 
-script:
-- tox -e lint
-- tox -e py27
-- tox -e py34
+script: tox -v
+
+env:
+- TOXENV=lint
+- TOXENV=py27
+- TOXENV=py34
 
 after_success:
 - coveralls
