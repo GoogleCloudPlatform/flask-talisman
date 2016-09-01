@@ -41,7 +41,6 @@ class TestTalismanExtension(unittest.TestCase):
             'max-age=31556926; includeSubDomains; preload',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
-            'X-Download-Options': 'noopen',
             'Content-Security-Policy': 'default-src \'self\'',
             'X-Content-Security-Policy': 'default-src \'self\''
         }
@@ -171,3 +170,9 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse('Content-Security-Policy' in response.headers)
         self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')
+
+    def testForceFileSave(self):
+        self.talisman.force_file_save = True
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue('X-Download-Options' in response.headers)
+        self.assertEqual(response.headers['X-Download-Options'], 'noopen')
