@@ -75,19 +75,19 @@ class TestTalismanExtension(unittest.TestCase):
 
         # No HSTS headers for non-ssl requests
         response = self.client.get('/')
-        self.assertTrue('Strict-Transport-Security' not in response.headers)
+        self.assertFalse('Strict-Transport-Security' in response.headers)
 
         # Secure request with HSTS off
         self.talisman.strict_transport_security = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Strict-Transport-Security' not in response.headers)
+        self.assertFalse('Strict-Transport-Security' in response.headers)
 
         # No subdomains
         self.talisman.strict_transport_security = True
         self.talisman.strict_transport_security_include_subdomains = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue(
-            'includeSubDomains' not in
+        self.assertFalse(
+            'includeSubDomains' in
             response.headers['Strict-Transport-Security'])
 
     def testFrameOptions(self):
@@ -117,7 +117,7 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertTrue('default-src \'self\'' in csp)
         self.assertTrue('image-src \'self\' example.com' in csp)
 
-        # sting policy
+        # string policy
         self.talisman.content_security_policy = 'default-src example.com'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.headers['Content-Security-Policy'],
@@ -126,7 +126,39 @@ class TestTalismanExtension(unittest.TestCase):
         # no policy
         self.talisman.content_security_policy = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Content-Security-Policy' not in response.headers)
+        self.assertFalse('Content-Security-Policy' in response.headers)
+
+    def testContentSecurityPolicyOptionsReport(self):
+        # report-only policy
+        self.talisman.content_security_policy_report_only = True
+        self.talisman.content_security_policy_report_uri = \
+            'https://example.com'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue(
+            'Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            'X-Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            'report-uri'
+            in response.headers['Content-Security-Policy-Report-Only'])
+        self.assertFalse('Content-Security-Policy' in response.headers)
+        self.assertFalse('X-Content-Security-Policy' in response.headers)
+
+        override_report_uri = 'https://report-uri.io/'
+        self.talisman.content_security_policy = {
+            'report-uri': override_report_uri,
+        }
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue(
+            'Content-Security-Policy-Report-Only' in response.headers)
+        self.assertTrue(
+            override_report_uri
+            in response.headers['Content-Security-Policy-Report-Only']
+        )
+
+        # exception on missing report-uri when report-only
+        self.assertRaises(ValueError, Talisman, self.app,
+                          content_security_policy_report_only=True)
 
     def testDecorator(self):
 
@@ -136,5 +168,11 @@ class TestTalismanExtension(unittest.TestCase):
             return 'Hello, world'
 
         response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('Content-Security-Policy' not in response.headers)
+        self.assertFalse('Content-Security-Policy' in response.headers)
         self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')
+
+    def testForceFileSave(self):
+        self.talisman.force_file_save = True
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue('X-Download-Options' in response.headers)
+        self.assertEqual(response.headers['X-Download-Options'], 'noopen')

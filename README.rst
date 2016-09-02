@@ -11,9 +11,9 @@ The default configuration:
 
 -  Forces all connects to ``https``, unless running with debug enabled.
 -  Enables `HTTP Strict Transport
-   Security <https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security>`__.
+   Security <https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security>`_.
 -  Enables HSTS preloading. If you register your application with
-   `Google's HSTS preload list <https://hstspreload.appspot.com/>`__,
+   `Google's HSTS preload list <https://hstspreload.appspot.com/>`_,
    Firefox and Chrome will never load your site over a non-secure
    connection.
 -  Sets Flask's session cookie to ``secure``, so it will never be set if
@@ -22,25 +22,34 @@ The default configuration:
    from being able to access its content. CSRF via Ajax uses a separate
    cookie and should be unaffected.
 -  Sets
-   `X-Frame-Options <https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options>`__
+   `X-Frame-Options <https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options>`_
    to ``SAMEORIGIN`` to avoid
-   `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`__.
+   `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`_.
+-  Sets `X-XSS-Protection
+   <http://msdn.microsoft.com/en-us/library/dd565647(v=vs.85).aspx>`_ to enable
+   a cross site scripting filter for IE/Chrome.
+-  Sets `X-Content-Type-Options
+   <https://msdn.microsoft.com/library/gg622941(v=vs.85).aspx>`_ to prevents
+   content type sniffing for IE >= 9.
+-  Sets `X-Download-Options
+   <https://msdn.microsoft.com/library/jj542450(v=vs.85).aspx>`_ to prevent
+   file downloads opening for IE >= 8.
 -  Sets a strict `Content Security
-   Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`__
+   Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`_
    of ``default-src: 'self'``. This is intended to almost completely
    prevent Cross Site Scripting (XSS) attacks. This is probably the only
    setting that you should reasonably change. See the `section
-   below <#content-security-policy>`__ on configuring this.
+   below <#content-security-policy>`_ on configuring this.
 
 In addition to Talisman, you **should always use a cross-site request
 forgery (CSRF) library**. It's highly recommended to use
-`Flask-SeaSurf <https://flask-seasurf.readthedocs.org/en/latest/>`__,
+`Flask-SeaSurf <https://flask-seasurf.readthedocs.org/en/latest/>`_,
 which is based on Django's excellent library.
 
 Installation & Basic Usage
 --------------------------
 
-Install via `pip <https://pypi.python.org/pypi/pip>`__:
+Install via `pip <https://pypi.python.org/pypi/pip>`_:
 
 ::
 
@@ -56,7 +65,7 @@ Install via `pip <https://pypi.python.org/pypi/pip>`__:
     Talisman(app)
 
 
-There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/example_app>`__.
+There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/example_app>`_.
 
 Options
 -------
@@ -76,11 +85,22 @@ Options
 -  ``strict_transport_security_include_subdomains``, default ``True``,
    whether subdomains should also use HSTS.
 -  ``content_security_policy``, default ``default-src: 'self'``, see the
-   `section below <#content-security-policy>`__.
+   `section below <#content-security-policy>`_.
+-  ``content_security_policy_report_only``, default ``False``, whether to set
+   the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
+   to ease deployment by disabling the policy enforcement by the browser,
+   requires passing a value with the ``content_security_policy_report_uri``
+   parameter
+-  ``content_security_policy_report_uri``, default ``None``, a string
+   indicating the report URI used for `CSP violation reports
+   <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_CSP_violation_reports>`_
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
    cookie to ``httponly``, preventing it from being read by JavaScript.
+-  ``force_file_save``, default ``False``, whether to set the
+   ``X-Download-Options`` header to ``noopen`` to prevent IE >= 8 to from
+   opening file downloads directly and only save them instead
 
 Per-view options
 ~~~~~~~~~~~~~~~~
@@ -119,7 +139,7 @@ libraries, fonts, and embeding media from YouTube and Maps.
 
 You can and should create your own policy to suit your site's needs.
 Here's a few examples adapted from
-`MDN <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy>`__:
+`MDN <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy>`_:
 
 Example 1
 ~~~~~~~~~
