@@ -53,13 +53,13 @@ Install via `pip <https://pypi.python.org/pypi/pip>`_:
 
 ::
 
-    pip install talisman
+    pip install flask-talisman
 
 
 .. code:: python
 
     from flask import Flask
-    from talisman import Talisman
+    from flask_talisman import Talisman
 
     app = Flask(__name__)
     Talisman(app)
@@ -112,7 +112,7 @@ Sometimes you want to change the policy for a specific view. The
 .. code:: python
 
     from flask import Flask
-    from talisman import Talisman, ALLOW_FROM
+    from flask_talisman import Talisman, ALLOW_FROM
 
     app = Flask(__name__)
     talisman = Talisman(app)
@@ -134,7 +134,7 @@ prevent loading any resources that are not in the same domain as the
 application. Most web applications will need to change this policy.
 
 A slightly more permissive policy is available at
-``talisman.GOOGLE_CSP_POLICY``, which allows loading Google-hosted JS
+``flask_talisman.GOOGLE_CSP_POLICY``, which allows loading Google-hosted JS
 libraries, fonts, and embeding media from YouTube and Maps.
 
 You can and should create your own policy to suit your site's needs.
@@ -262,5 +262,5 @@ Licensing
    :target: https://travis-ci.org/GoogleCloudPlatform/flask-talisman
 .. |Coverage Status| image:: https://coveralls.io/repos/GoogleCloudPlatform/flask-talisman/badge.svg
    :target: https://coveralls.io/r/GoogleCloudPlatform/flask-talisman
-.. |PyPI Version| image:: https://img.shields.io/pypi/v/talisman.svg
-   :target: https://pypi.python.org/pypi/talisman
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/flask-talisman.svg
+   :target: https://pypi.python.org/pypi/flask-talisman
