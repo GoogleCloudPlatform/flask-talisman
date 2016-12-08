@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .flask_talisman import (
+from .talisman import (
     ALLOW_FROM, DEFAULT_CSP_POLICY, DENY, GOOGLE_CSP_POLICY, SAMEORIGIN,
     Talisman)
 

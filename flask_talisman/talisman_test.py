@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
+
 import unittest
 
 import flask
+from flask_talisman import ALLOW_FROM, DENY, Talisman
 from six import iteritems
-from talisman import ALLOW_FROM, DENY, Talisman
 
 
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
