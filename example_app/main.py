@@ -14,7 +14,7 @@
 
 from flask import Flask, render_template, request
 from flask.ext.seasurf import SeaSurf
-from talisman import Talisman
+from flask_talisman import Talisman
 
 
 app = Flask(__name__)

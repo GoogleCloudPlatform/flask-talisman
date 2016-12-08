@@ -21,9 +21,9 @@ long_description = open('README.rst', 'r', encoding='utf-8').read()
 
 
 setup(
-    name='talisman',
+    name='flask-talisman',
 
-    version='0.1.0',
+    version='0.2.0',
 
     description='HTTP security headers for Flask.',
     long_description=long_description,
@@ -56,7 +56,7 @@ setup(
     ],
     keywords='flask security https xss',
 
-    packages=['talisman'],
+    packages=['flask_talisman'],
 
     install_requires=['six>=1.9.0'],
 )
