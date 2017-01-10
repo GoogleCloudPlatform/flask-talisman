@@ -12,10 +12,6 @@ The default configuration:
 -  Forces all connects to ``https``, unless running with debug enabled.
 -  Enables `HTTP Strict Transport
    Security <https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security>`_.
--  Enables HSTS preloading. If you register your application with
-   `Google's HSTS preload list <https://hstspreload.appspot.com/>`_,
-   Firefox and Chrome will never load your site over a non-secure
-   connection.
 -  Sets Flask's session cookie to ``secure``, so it will never be set if
    you application is somehow accessed via a non-secure connection.
 -  Sets Flask's session cookie to ``httponly``, preventing JavaScript
@@ -80,6 +76,11 @@ Options
    the domains that are allowed to embed the site via iframe.
 -  ``strict_transport_security``, default ``True``, whether to send HSTS
    headers.
+-  ``strict_transport_security_preload``, default ``False``, enables HSTS
+   preloading If you register your application with
+   `Google's HSTS preload list <https://hstspreload.appspot.com/>`_,
+   Firefox and Chrome will never load your site over a non-secure
+   connection.
 -  ``strict_transport_security_max_age``, default ``ONE_YEAR_IN_SECS``,
    length of time the browser will respect the HSTS header.
 -  ``strict_transport_security_include_subdomains``, default ``True``,
