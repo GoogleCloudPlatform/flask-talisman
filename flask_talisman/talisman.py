@@ -63,6 +63,7 @@ class Talisman(object):
             frame_options=SAMEORIGIN,
             frame_options_allow_from=None,
             strict_transport_security=True,
+            strict_transport_security_preload=False,
             strict_transport_security_max_age=ONE_YEAR_IN_SECS,
             strict_transport_security_include_subdomains=True,
             content_security_policy=DEFAULT_CSP_POLICY,
@@ -83,6 +84,8 @@ class Talisman(object):
             frame_options_allow_from: Used when frame_options is set to
                 ALLOW_FROM and is a string of domains to allow frame embedding.
             strict_transport_security: Sets HSTS headers.
+            strict_transport_security_preload: Enables HSTS preload. See
+                https://hstspreload.org.
             strict_transport_security_max_age: How long HSTS headers are
                 honored by the browser.
             strict_transport_security_include_subdomain: Whether to include
@@ -112,6 +115,7 @@ class Talisman(object):
         self.frame_options_allow_from = frame_options_allow_from
 
         self.strict_transport_security = strict_transport_security
+        self.strict_transport_security_preload = False
         self.strict_transport_security_max_age = \
             strict_transport_security_max_age
         self.strict_transport_security_include_subdomains = \
@@ -242,7 +246,8 @@ class Talisman(object):
         if self.strict_transport_security_include_subdomains:
             value += '; includeSubDomains'
 
-        value += '; preload'
+        if self.strict_transport_security_preload:
+            value += '; preload'
 
         headers['Strict-Transport-Security'] = value
 

@@ -40,7 +40,7 @@ class TestTalismanExtension(unittest.TestCase):
         headers = {
             'X-Frame-Options': 'SAMEORIGIN',
             'Strict-Transport-Security':
-            'max-age=31556926; includeSubDomains; preload',
+            'max-age=31556926; includeSubDomains',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
             'Content-Security-Policy': 'default-src \'self\'',
@@ -91,6 +91,12 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertFalse(
             'includeSubDomains' in
             response.headers['Strict-Transport-Security'])
+
+        # Preload
+        self.talisman.strict_transport_security_preload = True
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertTrue(
+            'preload' in response.headers['Strict-Transport-Security'])
 
     def testFrameOptions(self):
         self.talisman.frame_options = DENY
