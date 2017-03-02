@@ -147,12 +147,27 @@ class Talisman(object):
         app.before_request(self._force_https)
         app.after_request(self._set_response_headers)
 
-    def _update_local_options(
-            self,
-            frame_options=_sentinel,
-            frame_options_allow_from=_sentinel,
-            content_security_policy=_sentinel):
+    def _update_local_options(self):
         """Updates view-local options with defaults or specified values."""
+        view_function = flask.current_app.view_functions[
+                flask.request.endpoint]
+
+        view_options = getattr(
+            view_function, 'talisman_view_options', {})
+
+        print(type(flask.request.endpoint))
+        print(flask.request.endpoint)
+        print(flask.request.endpoint.__hash__())
+        print(view_options)
+        force_https = view_options.get('force_https', _sentinel)
+        frame_options = view_options.get('frame_options', _sentinel)
+        frame_options_allow_from = view_options.get(
+            'frame_options_allow_from', _sentinel)
+        content_security_policy = view_options.get(
+            'content_security_policy', _sentinel)
+        setattr(self.local_options, 'force_https',
+                force_https if force_https is not _sentinel
+                else self.force_https)
         setattr(self.local_options, 'frame_options',
                 frame_options if frame_options is not _sentinel
                 else self.frame_options)
@@ -179,7 +194,7 @@ class Talisman(object):
             flask.request.headers.get('X-Forwarded-Proto', 'http') == 'https',
         ]
 
-        if self.force_https and not any(criteria):
+        if self.local_options.force_https and not any(criteria):
             if flask.request.url.startswith('http://'):
                 url = flask.request.url.replace('http://', 'https://', 1)
                 code = 302
@@ -253,6 +268,7 @@ class Talisman(object):
 
     def __call__(
             self,
+            force_https=_sentinel,
             frame_options=_sentinel,
             frame_options_allow_from=_sentinel,
             content_security_policy=_sentinel):
@@ -277,12 +293,13 @@ class Talisman(object):
                 return 'Embeddable'
         """
         def decorator(f):
-            @wraps(f)
-            def decorated_function(*args, **kwargs):
-                self._update_local_options(
-                    frame_options=frame_options,
-                    frame_options_allow_from=frame_options_allow_from,
-                    content_security_policy=content_security_policy)
-                return f(*args, **kwargs)
-            return decorated_function
+            setattr(f, 'talisman_view_options', dict(
+                force_https=force_https,
+                frame_options=frame_options,
+                frame_options_allow_from=frame_options_allow_from,
+                content_security_policy=content_security_policy))
+            print(f.talisman_view_options)
+            print(f)
+            print(f.__hash__())
+            return f
         return decorator

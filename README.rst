@@ -107,7 +107,7 @@ Per-view options
 ~~~~~~~~~~~~~~~~
 
 Sometimes you want to change the policy for a specific view. The
-``frame_options``, ``frame_options_allow_from``, and
+``force_https``, ``frame_options``, ``frame_options_allow_from``, and
 ``content_security_policy`` options can be changed on a per-view basis.
 
 .. code:: python

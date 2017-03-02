@@ -169,7 +169,6 @@ class TestTalismanExtension(unittest.TestCase):
                           content_security_policy_report_only=True)
 
     def testDecorator(self):
-
         @self.app.route('/nocsp')
         @self.talisman(content_security_policy=None)
         def nocsp():
@@ -178,6 +177,15 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse('Content-Security-Policy' in response.headers)
         self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')
+
+    def testDecoratorForceHttps(self):
+        @self.app.route('/noforcehttps')
+        @self.talisman(force_https=False)
+        def noforcehttps():
+            return 'Hello, world'
+
+        response = self.client.get('/noforcehttps')
+        self.assertEqual(response.status_code, 200)
 
     def testForceFileSave(self):
         self.talisman.force_file_save = True
