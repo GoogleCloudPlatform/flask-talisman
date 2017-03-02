@@ -23,7 +23,7 @@ long_description = open('README.rst', 'r', encoding='utf-8').read()
 setup(
     name='flask-talisman',
 
-    version='0.2.1',
+    version='0.3.0',
 
     description='HTTP security headers for Flask.',
     long_description=long_description,
