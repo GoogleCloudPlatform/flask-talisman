@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from functools import wraps
-
 import flask
 from six import iteritems, string_types
 from werkzeug.local import Local
