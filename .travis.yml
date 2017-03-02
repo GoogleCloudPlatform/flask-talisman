@@ -6,8 +6,6 @@ matrix:
   - python: 3.6
     env: TOXENV=lint
   - python: 3.6
-    env: TOXENV=docs
-  - python: 2.7
     env: TOXENV=py27
   - python: 3.4
     env: TOXENV=py34
