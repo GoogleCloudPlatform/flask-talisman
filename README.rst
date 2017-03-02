@@ -31,11 +31,11 @@ The default configuration:
    <https://msdn.microsoft.com/library/jj542450(v=vs.85).aspx>`_ to prevent
    file downloads opening for IE >= 8.
 -  Sets a strict `Content Security
-   Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`_
+   Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`__
    of ``default-src: 'self'``. This is intended to almost completely
    prevent Cross Site Scripting (XSS) attacks. This is probably the only
-   setting that you should reasonably change. See the `section
-   below <#content-security-policy>`_ on configuring this.
+   setting that you should reasonably change. See the
+   `Content Security Policy`_ section.
 
 In addition to Talisman, you **should always use a cross-site request
 forgery (CSRF) library**. It's highly recommended to use
@@ -86,7 +86,7 @@ Options
 -  ``strict_transport_security_include_subdomains``, default ``True``,
    whether subdomains should also use HSTS.
 -  ``content_security_policy``, default ``default-src: 'self'``, see the
-   `section below <#content-security-policy>`_.
+   `Content Security Policy`_ section.
 -  ``content_security_policy_report_only``, default ``False``, whether to set
    the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
    to ease deployment by disabling the policy enforcement by the browser,
