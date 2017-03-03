@@ -153,10 +153,6 @@ class Talisman(object):
         view_options = getattr(
             view_function, 'talisman_view_options', {})
 
-        print(type(flask.request.endpoint))
-        print(flask.request.endpoint)
-        print(flask.request.endpoint.__hash__())
-        print(view_options)
         force_https = view_options.get('force_https', _sentinel)
         frame_options = view_options.get('frame_options', _sentinel)
         frame_options_allow_from = view_options.get(
@@ -296,8 +292,5 @@ class Talisman(object):
                 frame_options=frame_options,
                 frame_options_allow_from=frame_options_allow_from,
                 content_security_policy=content_security_policy))
-            print(f.talisman_view_options)
-            print(f)
-            print(f.__hash__())
             return f
         return decorator
