@@ -199,5 +199,3 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/bad_endpoint',
                                    headers={'X-Forwarded-Proto': 'https'})
         self.assertEqual(response.status_code, 404)
-
-
