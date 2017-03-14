@@ -147,8 +147,8 @@ class Talisman(object):
 
     def _update_local_options(self):
         """Updates view-local options with defaults or specified values."""
-        view_function = flask.current_app.view_functions[
-                flask.request.endpoint]
+        view_function = flask.current_app.view_functions.get(
+                flask.request.endpoint)
 
         view_options = getattr(
             view_function, 'talisman_view_options', {})

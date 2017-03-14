@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from flask import Flask, render_template, request
-from flask.ext.seasurf import SeaSurf
+from flask_seasurf import SeaSurf
 from flask_talisman import Talisman
 
 

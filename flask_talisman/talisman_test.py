@@ -192,3 +192,12 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertTrue('X-Download-Options' in response.headers)
         self.assertEqual(response.headers['X-Download-Options'], 'noopen')
+
+    def testBadEndpoint(self):
+        response = self.client.get('/bad_endpoint')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/bad_endpoint',
+                                   headers={'X-Forwarded-Proto': 'https'})
+        self.assertEqual(response.status_code, 404)
+
+
