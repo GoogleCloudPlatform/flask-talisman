@@ -186,7 +186,6 @@ class Talisman(object):
             self.app.debug,
             flask.request.is_secure,
             flask.request.headers.get('X-Forwarded-Proto', 'http') == 'https',
-            flask.request.endpoint is None,
         ]
 
         if self.local_options.force_https and not any(criteria):

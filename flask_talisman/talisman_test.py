@@ -195,4 +195,9 @@ class TestTalismanExtension(unittest.TestCase):
 
     def testBadEndpoint(self):
         response = self.client.get('/bad_endpoint')
-        self.assertEqual(response.status, '404 NOT FOUND')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/bad_endpoint',
+                                   headers={'X-Forwarded-Proto': 'https'})
+        self.assertEqual(response.status_code, 404)
+
+
