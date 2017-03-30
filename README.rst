@@ -51,6 +51,7 @@ Install via `pip <https://pypi.python.org/pypi/pip>`_:
 
     pip install flask-talisman
 
+After installing, wrap your Flask app with a ``Talisman``:
 
 .. code:: python
 
