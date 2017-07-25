@@ -113,7 +113,8 @@ class Talisman(object):
         self.frame_options_allow_from = frame_options_allow_from
 
         self.strict_transport_security = strict_transport_security
-        self.strict_transport_security_preload = False
+        self.strict_transport_security_preload = \
+            strict_transport_security_preload
         self.strict_transport_security_max_age = \
             strict_transport_security_max_age
         self.strict_transport_security_include_subdomains = \
