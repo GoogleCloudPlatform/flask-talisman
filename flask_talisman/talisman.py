@@ -22,6 +22,8 @@ SAMEORIGIN = 'SAMEORIGIN'
 ALLOW_FROM = 'ALLOW-FROM'
 ONE_YEAR_IN_SECS = 31556926
 
+DEFAULT_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
 DEFAULT_CSP_POLICY = {
     'default-src': '\'self\'',
 }
@@ -67,6 +69,7 @@ class Talisman(object):
             content_security_policy=DEFAULT_CSP_POLICY,
             content_security_policy_report_uri=None,
             content_security_policy_report_only=False,
+            referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True):
         """
@@ -96,6 +99,8 @@ class Talisman(object):
                 as "report-only", which disables the enforcement by the browser
                 and requires a "report-uri" parameter with a backend to receive
                 the POST data
+            referrer_policy: A string describing the referrer policy for the
+                response.
             session_cookie_secure: Forces the session cookie to only be sent
                 over https. Disabled in debug mode.
             session_cookie_http_only: Prevents JavaScript from reading the
@@ -131,6 +136,8 @@ class Talisman(object):
                 'Setting content_security_policy_report_only to True also '
                 'requires a URI to be specified in '
                 'content_security_policy_report_uri')
+
+        self.referrer_policy = referrer_policy
 
         self.session_cookie_secure = session_cookie_secure
 
@@ -203,6 +210,7 @@ class Talisman(object):
         self._set_frame_options_headers(response.headers)
         self._set_content_security_policy_headers(response.headers)
         self._set_hsts_headers(response.headers)
+        self._set_referrer_policy_headers(response.headers)
         return response
 
     def _set_frame_options_headers(self, headers):
@@ -260,6 +268,9 @@ class Talisman(object):
             value += '; preload'
 
         headers['Strict-Transport-Security'] = value
+
+    def _set_referrer_policy_headers(self, headers):
+        headers['Referrer-Policy'] = self.referrer_policy
 
     def __call__(
             self,

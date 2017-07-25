@@ -36,6 +36,9 @@ The default configuration:
    prevent Cross Site Scripting (XSS) attacks. This is probably the only
    setting that you should reasonably change. See the
    `Content Security Policy`_ section.
+-  Sets a strict `Referrer-Policy <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy>`_
+   of ``strict-origin-when-cross-origin`` that governs which referrer information should be included with
+   requests made.
 
 In addition to Talisman, you **should always use a cross-site request
 forgery (CSRF) library**. It's highly recommended to use
@@ -96,6 +99,10 @@ Options
 -  ``content_security_policy_report_uri``, default ``None``, a string
    indicating the report URI used for `CSP violation reports
    <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_CSP_violation_reports>`_
+-  ``referrer_policy``, default ``strict-origin-when-cross-origin``, a string
+   that sets the Referrer Policy header to send a full URL when performing a same-origin
+   request, only send the origin of the document to an equally secure destination
+   (HTTPS->HTTPS), and send no header to a less secure destination (HTTPS->HTTP).
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session

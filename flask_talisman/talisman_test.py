@@ -44,7 +44,8 @@ class TestTalismanExtension(unittest.TestCase):
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
             'Content-Security-Policy': 'default-src \'self\'',
-            'X-Content-Security-Policy': 'default-src \'self\''
+            'X-Content-Security-Policy': 'default-src \'self\'',
+            'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
 
         for key, value in iteritems(headers):
