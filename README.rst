@@ -161,6 +161,7 @@ to come from the site's own origin (this excludes subdomains.)
     csp = {
         'default-src': '\'self\''
     }
+    talisman = Talisman(app, content_security_policy=csp)
 
 Example 2
 ~~~~~~~~~
@@ -190,7 +191,7 @@ specific server that hosts trusted code.
 
     csp = {
         'default-src': '\'self\'',
-        'image-src': '*',
+        'img-src': '*',
         'media-src': [
             'media1.com',
             'media2.com',
