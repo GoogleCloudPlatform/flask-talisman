@@ -85,8 +85,16 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse('Strict-Transport-Security' in response.headers)
 
-        # No subdomains
+        # HSTS back on
         self.talisman.strict_transport_security = True
+
+        # HTTPS request through proxy
+        response = self.client.get('/', headers={
+            'X-Forwarded-Proto': 'https'
+        })
+        self.assertTrue('Strict-Transport-Security' in response.headers)
+
+        # No subdomains
         self.talisman.strict_transport_security_include_subdomains = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse(
