@@ -256,7 +256,11 @@ class Talisman(object):
         headers['X-' + csp_header] = policy
 
     def _set_hsts_headers(self, headers):
-        if not self.strict_transport_security or not flask.request.is_secure:
+        criteria = [
+            flask.request.is_secure,
+            flask.request.headers.get('X-Forwarded-Proto', 'http') == 'https',
+        ]
+        if not self.strict_transport_security or not any(criteria):
             return
 
         value = 'max-age={}'.format(self.strict_transport_security_max_age)
