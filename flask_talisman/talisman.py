@@ -260,14 +260,14 @@ class Talisman(object):
                 policy[policy_parts[0]] = "".join(policy_parts[1:])
 
         policies = []
-        for k, v in iteritems(policy):
-            policy_part = '{} {}'.format(
-                k,
-                ' '.join(v) if not isinstance(v, string_types) else v)
+        for section, content in iteritems(policy):
+            if not isinstance(content, string_types):
+                content = ' '.join(content)
+            policy_part = '{} {}'.format(section, content)
 
             if (
                     hasattr(flask.request, 'csp_nonce') and
-                    k in self.content_security_policy_nonce_in):
+                    section in self.content_security_policy_nonce_in):
                 policy_part += " 'nonce-{}'".format(flask.request.csp_nonce)
 
             policies.append(policy_part)
