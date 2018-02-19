@@ -144,8 +144,9 @@ class Talisman(object):
                 'Setting content_security_policy_report_only to True also '
                 'requires a URI to be specified in '
                 'content_security_policy_report_uri')
-        self.content_security_policy_nonce_in = \
+        self.content_security_policy_nonce_in = (
             content_security_policy_nonce_in or []
+        )
 
         self.referrer_policy = referrer_policy
 
