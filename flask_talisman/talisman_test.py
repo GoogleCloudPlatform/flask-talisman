@@ -177,6 +177,20 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertRaises(ValueError, Talisman, self.app,
                           content_security_policy_report_only=True)
 
+    def testContentSecurityPolicyNonce(self):
+        self.talisman.content_security_policy['script-src'] = "'self'"
+        self.talisman.content_security_policy_nonce_in = ['script-src']
+
+        with self.app.test_client() as client:
+            response = client.get('/', environ_overrides=HTTPS_ENVIRON)
+
+            csp = response.headers['Content-Security-Policy']
+
+            self.assertIn(
+                "script-src 'self' 'nonce-{}'".format(flask.request.csp_nonce),
+                csp
+            )
+
     def testDecorator(self):
         @self.app.route('/nocsp')
         @self.talisman(content_security_policy=None)

@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import random
+import string
+
 import flask
 from six import iteritems, string_types
 from werkzeug.local import Local
@@ -42,6 +45,8 @@ GOOGLE_CSP_POLICY = {
     'default-src': '\'self\' *.gstatic.com',
 }
 
+NONCE_LENGTH = 16
+
 _sentinel = object()
 
 
@@ -69,6 +74,7 @@ class Talisman(object):
             content_security_policy=DEFAULT_CSP_POLICY,
             content_security_policy_report_uri=None,
             content_security_policy_report_only=False,
+            content_security_policy_nonce_in=None,
             referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True):
@@ -99,6 +105,8 @@ class Talisman(object):
                 as "report-only", which disables the enforcement by the browser
                 and requires a "report-uri" parameter with a backend to receive
                 the POST data
+            content_security_policy_nonce_in: A list of csp sections to include
+                a per-request none value in
             referrer_policy: A string describing the referrer policy for the
                 response.
             session_cookie_secure: Forces the session cookie to only be sent
@@ -136,6 +144,9 @@ class Talisman(object):
                 'Setting content_security_policy_report_only to True also '
                 'requires a URI to be specified in '
                 'content_security_policy_report_uri')
+        self.content_security_policy_nonce_in = (
+            content_security_policy_nonce_in or []
+        )
 
         self.referrer_policy = referrer_policy
 
@@ -151,6 +162,7 @@ class Talisman(object):
 
         app.before_request(self._update_local_options)
         app.before_request(self._force_https)
+        app.before_request(self._make_nonce)
         app.after_request(self._set_response_headers)
 
     def _update_local_options(self):
@@ -213,6 +225,13 @@ class Talisman(object):
         self._set_referrer_policy_headers(response.headers)
         return response
 
+    def _make_nonce(self):
+        if (
+                self.local_options.content_security_policy and
+                self.content_security_policy_nonce_in and
+                not getattr(flask.request, 'csp_nonce', None)):
+            flask.request.csp_nonce = get_random_string(NONCE_LENGTH)
+
     def _set_frame_options_headers(self, headers):
         headers['X-Frame-Options'] = self.local_options.frame_options
 
@@ -232,16 +251,29 @@ class Talisman(object):
 
         policy = self.local_options.content_security_policy
 
-        if not isinstance(policy, string_types):
-            policies = [
-                '{} {}'.format(
-                    k,
-                    ' '.join(v) if not isinstance(v, string_types) else v)
-                for (k, v)
-                in iteritems(policy)
-            ]
+        if isinstance(policy, string_types):
+            # parse the string into a policy dict
+            policy_string = policy
+            policy = {}
 
-            policy = '; '.join(policies)
+            for policy_part in policy_string.split(';'):
+                policy_parts = policy_part.strip().split(' ')
+                policy[policy_parts[0]] = "".join(policy_parts[1:])
+
+        policies = []
+        for section, content in iteritems(policy):
+            if not isinstance(content, string_types):
+                content = ' '.join(content)
+            policy_part = '{} {}'.format(section, content)
+
+            if (
+                    hasattr(flask.request, 'csp_nonce') and
+                    section in self.content_security_policy_nonce_in):
+                policy_part += " 'nonce-{}'".format(flask.request.csp_nonce)
+
+            policies.append(policy_part)
+
+        policy = '; '.join(policies)
 
         if self.content_security_policy_report_uri and \
                 'report-uri' not in policy:
@@ -310,3 +342,13 @@ class Talisman(object):
                 content_security_policy=content_security_policy))
             return f
         return decorator
+
+
+def get_random_string(length):
+    allowed_chars = (
+        string.ascii_lowercase +
+        string.ascii_uppercase +
+        string.digits)
+    return ''.join(
+        random.SystemRandom().choice(allowed_chars)
+        for _ in range(length))
