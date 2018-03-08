@@ -148,6 +148,8 @@ class Talisman(object):
             content_security_policy_nonce_in or []
         )
 
+        app.jinja_env.globals['csp_nonce'] = self._get_nonce
+
         self.referrer_policy = referrer_policy
 
         self.session_cookie_secure = session_cookie_secure
@@ -231,6 +233,9 @@ class Talisman(object):
                 self.content_security_policy_nonce_in and
                 not getattr(flask.request, 'csp_nonce', None)):
             flask.request.csp_nonce = get_random_string(NONCE_LENGTH)
+
+    def _get_nonce(self):
+        return getattr(flask.request, 'csp_nonce', '')
 
     def _set_frame_options_headers(self, headers):
         headers['X-Frame-Options'] = self.local_options.frame_options

@@ -33,5 +33,15 @@
   <button type="submit">Submit</button>
 </form>
 
+<script>
+  // This script is forbidden
+  console.log("Oh no, this should not have run!!")
+</script>
+
+<script nonce="{{ csp_nonce() }}">
+  // This one isn't
+  console.log("Yay, nonce allowed to run this.")
+</script>
+
 </body>
 </html>

@@ -248,6 +248,35 @@ example CSP, this site uses the setting specified by the ``default-src``
 directive, which means that scripts can be loaded only from the
 originating server.
 
+Example 6
+~~~~~~~~~
+
+A web site administrator wants to allow embedded scripts (which might
+be generated dynamicially).
+
+.. code:: python
+
+    csp = {
+        'default-src': '\'self\'',
+        'script-src': '\'self\'',
+    }
+    talisman = Talisman(
+        app,
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src']
+    )
+
+The nonce needs to be added to the script tag in the template:
+
+.. code:: html
+
+    <script nonce="{{ csp_nonce() }}">
+        //...
+    </script>
+
+Note that the CSP directive (`script-src` in the example) to which the `nonce-...`
+source should be added needs to be defined explicitly.
+
 Disclaimer
 ----------
 
