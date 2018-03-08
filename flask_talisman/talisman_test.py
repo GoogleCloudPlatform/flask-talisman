@@ -29,7 +29,9 @@ def hello_world():
 
 
 def with_nonce():
-    return flask.render_template_string('<script nonce="{{csp_nonce()}}"></script>')
+    return flask.render_template_string(
+        '<script nonce="{{csp_nonce()}}"></script>'
+    )
 
 
 class TestTalismanExtension(unittest.TestCase):
@@ -191,7 +193,8 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy_nonce_in = ['script-src']
 
         with self.app.test_client() as client:
-            response = client.get('/with_nonce', environ_overrides=HTTPS_ENVIRON)
+            response = client.get('/with_nonce',
+                                  environ_overrides=HTTPS_ENVIRON)
 
             csp = response.headers['Content-Security-Policy']
 
