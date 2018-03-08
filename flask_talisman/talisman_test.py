@@ -24,6 +24,14 @@ from six import iteritems
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 
 
+def hello_world():
+    return 'Hello, world'
+
+
+def with_nonce():
+    return flask.render_template_string('<script nonce="{{csp_nonce()}}"></script>')
+
+
 class TestTalismanExtension(unittest.TestCase):
 
     def setUp(self):
@@ -31,7 +39,8 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman = Talisman(self.app)
         self.client = self.app.test_client()
 
-        self.app.route('/')(lambda: 'Hello, world')
+        self.app.route('/')(hello_world)
+        self.app.route('/with_nonce')(with_nonce)
 
     def testDefaults(self):
         # HTTPS request.
@@ -182,13 +191,17 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy_nonce_in = ['script-src']
 
         with self.app.test_client() as client:
-            response = client.get('/', environ_overrides=HTTPS_ENVIRON)
+            response = client.get('/with_nonce', environ_overrides=HTTPS_ENVIRON)
 
             csp = response.headers['Content-Security-Policy']
 
             self.assertIn(
                 "script-src 'self' 'nonce-{}'".format(flask.request.csp_nonce),
                 csp
+            )
+            self.assertIn(
+                flask.request.csp_nonce,
+                response.data.decode("utf-8")
             )
 
     def testDecorator(self):
