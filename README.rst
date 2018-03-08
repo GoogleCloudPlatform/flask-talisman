@@ -260,9 +260,11 @@ be generated dynamicially).
         'default-src': '\'self\'',
         'script-src': '\'self\'',
     }
-    talisman = Talisman(app,
-                        content_security_policy=csp,
-                        content_security_policy_nonce_in=['script-src'])
+    talisman = Talisman(
+        app,
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src']
+    )
 
 The nonce needs to be added to the script tag in the template:
 
