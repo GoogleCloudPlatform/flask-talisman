@@ -23,15 +23,15 @@ long_description = open('README.rst', 'r', encoding='utf-8').read()
 setup(
     name='flask-talisman',
 
-    version='0.5.0',
+    version='0.5.1',
 
     description='HTTP security headers for Flask.',
     long_description=long_description,
 
     url='https://github.com/GoogleCloudPlatform/flask-talisman',
 
-    author='Jon Wayne Parrott',
-    author_email='jonwayne@google.com',
+    author='Thea Flowers',
+    author_email='theaflowers@google.com',
 
     license='Apache Software License',
 
