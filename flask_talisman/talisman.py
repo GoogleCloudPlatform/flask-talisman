@@ -17,7 +17,6 @@ import string
 
 import flask
 from six import iteritems, string_types
-from werkzeug.local import Local
 
 
 DENY = 'DENY'
@@ -46,8 +45,6 @@ GOOGLE_CSP_POLICY = {
 }
 
 NONCE_LENGTH = 16
-
-_sentinel = object()
 
 
 class Talisman(object):
@@ -160,39 +157,25 @@ class Talisman(object):
         self.force_file_save = force_file_save
 
         self.app = app
-        self.local_options = Local()
 
-        app.before_request(self._update_local_options)
         app.before_request(self._force_https)
         app.before_request(self._make_nonce)
         app.after_request(self._set_response_headers)
 
-    def _update_local_options(self):
-        """Updates view-local options with defaults or specified values."""
+    def _get_local_options(self):
         view_function = flask.current_app.view_functions.get(
-                flask.request.endpoint)
-
+            flask.request.endpoint)
         view_options = getattr(
             view_function, 'talisman_view_options', {})
 
-        force_https = view_options.get('force_https', _sentinel)
-        frame_options = view_options.get('frame_options', _sentinel)
-        frame_options_allow_from = view_options.get(
-            'frame_options_allow_from', _sentinel)
-        content_security_policy = view_options.get(
-            'content_security_policy', _sentinel)
-        setattr(self.local_options, 'force_https',
-                force_https if force_https is not _sentinel
-                else self.force_https)
-        setattr(self.local_options, 'frame_options',
-                frame_options if frame_options is not _sentinel
-                else self.frame_options)
-        setattr(self.local_options, 'frame_options_allow_from',
-                frame_options_allow_from if frame_options_allow_from
-                is not _sentinel else self.frame_options_allow_from)
-        setattr(self.local_options, 'content_security_policy',
-                content_security_policy if content_security_policy
-                is not _sentinel else self.content_security_policy)
+        view_options.setdefault('force_https', self.force_https)
+        view_options.setdefault('frame_options', self.frame_options)
+        view_options.setdefault(
+            'frame_options_allow_from', self.frame_options_allow_from)
+        view_options.setdefault(
+            'content_security_policy', self.content_security_policy)
+
+        return view_options
 
     def _force_https(self):
         """Redirect any non-https requests to https.
@@ -210,7 +193,9 @@ class Talisman(object):
             flask.request.headers.get('X-Forwarded-Proto', 'http') == 'https',
         ]
 
-        if self.local_options.force_https and not any(criteria):
+        local_options = self._get_local_options()
+
+        if local_options['force_https'] and not any(criteria):
             if flask.request.url.startswith('http://'):
                 url = flask.request.url.replace('http://', 'https://', 1)
                 code = 302
@@ -221,15 +206,17 @@ class Talisman(object):
 
     def _set_response_headers(self, response):
         """Applies all configured headers to the given response."""
-        self._set_frame_options_headers(response.headers)
-        self._set_content_security_policy_headers(response.headers)
+        options = self._get_local_options()
+        self._set_frame_options_headers(response.headers, options)
+        self._set_content_security_policy_headers(response.headers, options)
         self._set_hsts_headers(response.headers)
         self._set_referrer_policy_headers(response.headers)
         return response
 
     def _make_nonce(self):
+        local_options = self._get_local_options()
         if (
-                self.local_options.content_security_policy and
+                local_options['content_security_policy'] and
                 self.content_security_policy_nonce_in and
                 not getattr(flask.request, 'csp_nonce', None)):
             flask.request.csp_nonce = get_random_string(NONCE_LENGTH)
@@ -237,24 +224,24 @@ class Talisman(object):
     def _get_nonce(self):
         return getattr(flask.request, 'csp_nonce', '')
 
-    def _set_frame_options_headers(self, headers):
-        headers['X-Frame-Options'] = self.local_options.frame_options
+    def _set_frame_options_headers(self, headers, options):
+        headers['X-Frame-Options'] = options['frame_options']
 
-        if self.local_options.frame_options == ALLOW_FROM:
+        if options['frame_options'] == ALLOW_FROM:
             headers['X-Frame-Options'] += " {}".format(
-                self.local_options.frame_options_allow_from)
+                options['frame_options_allow_from'])
 
-    def _set_content_security_policy_headers(self, headers):
+    def _set_content_security_policy_headers(self, headers, options):
         headers['X-XSS-Protection'] = '1; mode=block'
         headers['X-Content-Type-Options'] = 'nosniff'
 
         if self.force_file_save:
             headers['X-Download-Options'] = 'noopen'
 
-        if not self.local_options.content_security_policy:
+        if not options['content_security_policy']:
             return
 
-        policy = self.local_options.content_security_policy
+        policy = options['content_security_policy']
 
         if isinstance(policy, string_types):
             # parse the string into a policy dict
@@ -313,12 +300,7 @@ class Talisman(object):
     def _set_referrer_policy_headers(self, headers):
         headers['Referrer-Policy'] = self.referrer_policy
 
-    def __call__(
-            self,
-            force_https=_sentinel,
-            frame_options=_sentinel,
-            frame_options_allow_from=_sentinel,
-            content_security_policy=_sentinel):
+    def __call__(self, **kwargs):
         """Use talisman as a decorator to configure options for a particular
         view.
 
@@ -340,11 +322,7 @@ class Talisman(object):
                 return 'Embeddable'
         """
         def decorator(f):
-            setattr(f, 'talisman_view_options', dict(
-                force_https=force_https,
-                frame_options=frame_options,
-                frame_options_allow_from=frame_options_allow_from,
-                content_security_policy=content_security_policy))
+            setattr(f, 'talisman_view_options', kwargs)
             return f
         return decorator
 
