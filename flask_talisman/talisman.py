@@ -44,6 +44,9 @@ GOOGLE_CSP_POLICY = {
     'default-src': '\'self\' *.gstatic.com',
 }
 
+DEFAULT_FEATURE_POLICY = {
+}
+
 NONCE_LENGTH = 16
 
 
@@ -59,6 +62,7 @@ class Talisman(object):
     def init_app(
             self,
             app,
+            feature_policy=DEFAULT_FEATURE_POLICY,
             force_https=True,
             force_https_permanent=False,
             force_file_save=False,
@@ -80,6 +84,8 @@ class Talisman(object):
 
         Args:
             app: A Flask application.
+            feature_policy: A string or dictionary describing the
+                feature policy for the response.
             force_https: Redirects non-http requests to https, disabled in
                 debug mode.
             force_https_permanent: Uses 301 instead of 302 redirects.
@@ -116,6 +122,7 @@ class Talisman(object):
         See README.rst for a detailed description of each option.
         """
 
+        self.feature_policy = feature_policy.copy()
         self.force_https = force_https
         self.force_https_permanent = force_https_permanent
 
@@ -174,6 +181,9 @@ class Talisman(object):
             'frame_options_allow_from', self.frame_options_allow_from)
         view_options.setdefault(
             'content_security_policy', self.content_security_policy)
+        view_options.setdefault(
+            'feature_policy', self.feature_policy
+        )
 
         return view_options
 
@@ -207,6 +217,7 @@ class Talisman(object):
     def _set_response_headers(self, response):
         """Applies all configured headers to the given response."""
         options = self._get_local_options()
+        self._set_feature_headers(response.headers, options)
         self._set_frame_options_headers(response.headers, options)
         self._set_content_security_policy_headers(response.headers, options)
         self._set_hsts_headers(response.headers)
@@ -224,25 +235,7 @@ class Talisman(object):
     def _get_nonce(self):
         return getattr(flask.request, 'csp_nonce', '')
 
-    def _set_frame_options_headers(self, headers, options):
-        headers['X-Frame-Options'] = options['frame_options']
-
-        if options['frame_options'] == ALLOW_FROM:
-            headers['X-Frame-Options'] += " {}".format(
-                options['frame_options_allow_from'])
-
-    def _set_content_security_policy_headers(self, headers, options):
-        headers['X-XSS-Protection'] = '1; mode=block'
-        headers['X-Content-Type-Options'] = 'nosniff'
-
-        if self.force_file_save:
-            headers['X-Download-Options'] = 'noopen'
-
-        if not options['content_security_policy']:
-            return
-
-        policy = options['content_security_policy']
-
+    def _parse_policy(self, policy):
         if isinstance(policy, string_types):
             # parse the string into a policy dict
             policy_string = policy
@@ -266,6 +259,37 @@ class Talisman(object):
             policies.append(policy_part)
 
         policy = '; '.join(policies)
+
+        return policy
+
+    def _set_feature_headers(self, headers, options):
+        if not options['feature_policy']:
+            return
+
+        policy = options['feature_policy']
+        policy = self._parse_policy(policy)
+
+        headers['Feature-Policy'] = policy
+
+    def _set_frame_options_headers(self, headers, options):
+        headers['X-Frame-Options'] = options['frame_options']
+
+        if options['frame_options'] == ALLOW_FROM:
+            headers['X-Frame-Options'] += " {}".format(
+                options['frame_options_allow_from'])
+
+    def _set_content_security_policy_headers(self, headers, options):
+        headers['X-XSS-Protection'] = '1; mode=block'
+        headers['X-Content-Type-Options'] = 'nosniff'
+
+        if self.force_file_save:
+            headers['X-Download-Options'] = 'noopen'
+
+        if not options['content_security_policy']:
+            return
+
+        policy = options['content_security_policy']
+        policy = self._parse_policy(policy)
 
         if self.content_security_policy_report_uri and \
                 'report-uri' not in policy:
