@@ -238,3 +238,14 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/bad_endpoint',
                                    headers={'X-Forwarded-Proto': 'https'})
         self.assertEqual(response.status_code, 404)
+
+    def testFeaturePolicy(self):
+        self.talisman.feature_policy['geolocation'] = '\'none\''
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        feature_policy = response.headers['Feature-Policy']
+        self.assertTrue('geolocation \'none\'' in feature_policy)
+
+        self.talisman.feature_policy['fullscreen'] = '\'self\' example.com'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        feature_policy = response.headers['Feature-Policy']
+        self.assertTrue('fullscreen \'self\' example.com' in feature_policy)

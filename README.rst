@@ -70,6 +70,7 @@ There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-
 Options
 -------
 
+-  ``feature_policy``, default ``{}``, see the `Feature Policy` section.
 -  ``force_https``, default ``True``, forces all non-debug connects to
    ``https``.
 -  ``force_https_permanent``, default ``False``, uses ``301`` instead of
@@ -276,6 +277,25 @@ The nonce needs to be added to the script tag in the template:
 
 Note that the CSP directive (`script-src` in the example) to which the `nonce-...`
 source should be added needs to be defined explicitly.
+
+Feature Policy
+--------------
+
+The default feature policy is empty, as this is the default expected behaviour.
+Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
+and supported in Chrome and Safari.
+
+Geolocation Example
+~~~~~~~~~~~~~~~~~~~
+
+Disable access to Geolocation interface.
+
+.. code:: python
+
+    feature_policy = {
+        'geolocation': '\'none\''
+    }
+    talisman = Talisman(app, feature_policy=feature_policy)
 
 Disclaimer
 ----------

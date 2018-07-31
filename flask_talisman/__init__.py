@@ -13,12 +13,13 @@
 # limitations under the License.
 
 from .talisman import (
-    ALLOW_FROM, DEFAULT_CSP_POLICY, DENY, GOOGLE_CSP_POLICY, SAMEORIGIN,
-    Talisman)
+    ALLOW_FROM, DEFAULT_CSP_POLICY, DEFAULT_FEATURE_POLICY, DENY,
+    GOOGLE_CSP_POLICY, SAMEORIGIN, Talisman)
 
 __all__ = (
     'ALLOW_FROM',
     'DEFAULT_CSP_POLICY',
+    'DEFAULT_FEATURE_POLICY',
     'DENY',
     'GOOGLE_CSP_POLICY',
     'SAMEORIGIN',

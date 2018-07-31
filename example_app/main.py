@@ -37,6 +37,9 @@ talisman = Talisman(
         ],
     },
     content_security_policy_nonce_in=['script-src'],
+    feature_policy={
+        'geolocation': '\'none\'',
+    }
 )
 
 

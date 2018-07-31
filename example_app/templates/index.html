@@ -41,6 +41,9 @@
 <script nonce="{{ csp_nonce() }}">
   // This one isn't
   console.log("Yay, nonce allowed to run this.")
+  navigator.geolocation.getCurrentPosition(function(position) {
+    console.log('Oh no, geolocation access should be denied');
+  });
 </script>
 
 </body>
