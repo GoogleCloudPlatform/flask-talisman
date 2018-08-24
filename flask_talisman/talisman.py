@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import random
-import string
-
 import flask
 from six import iteritems, string_types
 
@@ -351,11 +348,20 @@ class Talisman(object):
         return decorator
 
 
-def get_random_string(length):
-    allowed_chars = (
-        string.ascii_lowercase +
-        string.ascii_uppercase +
-        string.digits)
-    return ''.join(
-        random.SystemRandom().choice(allowed_chars)
-        for _ in range(length))
+try:
+    import secrets
+    get_random_string = secrets.token_urlsafe  # pragma: no cover
+
+except ImportError:  # pragma: no cover
+    import random
+    import string
+    rnd = random.SystemRandom()
+
+    def get_random_string(length):
+        allowed_chars = (
+            string.ascii_lowercase +
+            string.ascii_uppercase +
+            string.digits)
+        return ''.join(
+            rnd.choice(allowed_chars)
+            for _ in range(length))
