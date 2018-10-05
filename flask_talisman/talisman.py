@@ -245,7 +245,7 @@ class Talisman(object):
 
             for policy_part in policy_string.split(';'):
                 policy_parts = policy_part.strip().split(' ')
-                policy[policy_parts[0]] = "".join(policy_parts[1:])
+                policy[policy_parts[0]] = " ".join(policy_parts[1:])
 
         policies = []
         for section, content in iteritems(policy):
