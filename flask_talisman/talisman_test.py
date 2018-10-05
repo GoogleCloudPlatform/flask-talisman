@@ -129,6 +129,10 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertEqual(
             response.headers['X-Frame-Options'], 'ALLOW-FROM example.com')
 
+        self.talisman.frame_options = None
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertNotIn('X-Frame-Options', response.headers)
+
     def testContentSecurityPolicyOptions(self):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
