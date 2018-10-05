@@ -89,12 +89,12 @@ class TestTalismanExtension(unittest.TestCase):
 
         # No HSTS headers for non-ssl requests
         response = self.client.get('/')
-        self.assertFalse('Strict-Transport-Security' in response.headers)
+        self.assertNotIn('Strict-Transport-Security', response.headers)
 
         # Secure request with HSTS off
         self.talisman.strict_transport_security = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertFalse('Strict-Transport-Security' in response.headers)
+        self.assertNotIn('Strict-Transport-Security', response.headers)
 
         # HSTS back on
         self.talisman.strict_transport_security = True
@@ -103,20 +103,18 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', headers={
             'X-Forwarded-Proto': 'https'
         })
-        self.assertTrue('Strict-Transport-Security' in response.headers)
+        self.assertIn('Strict-Transport-Security', response.headers)
 
         # No subdomains
         self.talisman.strict_transport_security_include_subdomains = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertFalse(
-            'includeSubDomains' in
-            response.headers['Strict-Transport-Security'])
+        self.assertNotIn(
+            'includeSubDomains', response.headers['Strict-Transport-Security'])
 
         # Preload
         self.talisman.strict_transport_security_preload = True
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue(
-            'preload' in response.headers['Strict-Transport-Security'])
+        self.assertIn('preload', response.headers['Strict-Transport-Security'])
 
     def testFrameOptions(self):
         self.talisman.frame_options = DENY
@@ -129,12 +127,16 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertEqual(
             response.headers['X-Frame-Options'], 'ALLOW-FROM example.com')
 
+        self.talisman.frame_options = None
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertNotIn('X-Frame-Options', response.headers)
+
     def testContentSecurityPolicyOptions(self):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertTrue('default-src \'self\'' in csp)
-        self.assertTrue('image-src *' in csp)
+        self.assertIn('default-src \'self\'', csp)
+        self.assertIn('image-src *', csp)
 
         self.talisman.content_security_policy['image-src'] = [
             '\'self\'',
@@ -142,8 +144,8 @@ class TestTalismanExtension(unittest.TestCase):
         ]
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertTrue('default-src \'self\'' in csp)
-        self.assertTrue('image-src \'self\' example.com' in csp)
+        self.assertIn('default-src \'self\'', csp)
+        self.assertIn('image-src \'self\' example.com', csp)
 
         # string policy
         self.talisman.content_security_policy = 'default-src example.com'
@@ -154,7 +156,7 @@ class TestTalismanExtension(unittest.TestCase):
         # no policy
         self.talisman.content_security_policy = False
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertFalse('Content-Security-Policy' in response.headers)
+        self.assertNotIn('Content-Security-Policy', response.headers)
 
         # string policy at initialization
         app = flask.Flask(__name__)
@@ -171,26 +173,26 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy_report_uri = \
             'https://example.com'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue(
-            'Content-Security-Policy-Report-Only' in response.headers)
-        self.assertTrue(
-            'X-Content-Security-Policy-Report-Only' in response.headers)
-        self.assertTrue(
-            'report-uri'
-            in response.headers['Content-Security-Policy-Report-Only'])
-        self.assertFalse('Content-Security-Policy' in response.headers)
-        self.assertFalse('X-Content-Security-Policy' in response.headers)
+        self.assertIn('Content-Security-Policy-Report-Only', response.headers)
+        self.assertIn(
+            'X-Content-Security-Policy-Report-Only', response.headers)
+        self.assertIn(
+            'report-uri',
+            response.headers['Content-Security-Policy-Report-Only']
+        )
+        self.assertNotIn('Content-Security-Policy', response.headers)
+        self.assertNotIn('X-Content-Security-Policy', response.headers)
 
         override_report_uri = 'https://report-uri.io/'
         self.talisman.content_security_policy = {
             'report-uri': override_report_uri,
         }
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue(
-            'Content-Security-Policy-Report-Only' in response.headers)
-        self.assertTrue(
-            override_report_uri
-            in response.headers['Content-Security-Policy-Report-Only']
+        self.assertIn(
+            'Content-Security-Policy-Report-Only', response.headers)
+        self.assertIn(
+            override_report_uri,
+            response.headers['Content-Security-Policy-Report-Only']
         )
 
         # exception on missing report-uri when report-only
@@ -223,7 +225,7 @@ class TestTalismanExtension(unittest.TestCase):
             return 'Hello, world'
 
         response = self.client.get('/nocsp', environ_overrides=HTTPS_ENVIRON)
-        self.assertFalse('Content-Security-Policy' in response.headers)
+        self.assertNotIn('Content-Security-Policy', response.headers)
         self.assertEqual(response.headers['X-Frame-Options'], 'SAMEORIGIN')
 
     def testDecoratorForceHttps(self):
@@ -238,7 +240,7 @@ class TestTalismanExtension(unittest.TestCase):
     def testForceFileSave(self):
         self.talisman.force_file_save = True
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertTrue('X-Download-Options' in response.headers)
+        self.assertIn('X-Download-Options', response.headers)
         self.assertEqual(response.headers['X-Download-Options'], 'noopen')
 
     def testBadEndpoint(self):
@@ -252,12 +254,12 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.feature_policy['geolocation'] = '\'none\''
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         feature_policy = response.headers['Feature-Policy']
-        self.assertTrue('geolocation \'none\'' in feature_policy)
+        self.assertIn('geolocation \'none\'', feature_policy)
 
         self.talisman.feature_policy['fullscreen'] = '\'self\' example.com'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         feature_policy = response.headers['Feature-Policy']
-        self.assertTrue('fullscreen \'self\' example.com' in feature_policy)
+        self.assertIn('fullscreen \'self\' example.com', feature_policy)
 
         # string policy at initialization
         app = flask.Flask(__name__)
