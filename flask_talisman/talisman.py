@@ -106,7 +106,7 @@ class Talisman(object):
                 and requires a "report-uri" parameter with a backend to receive
                 the POST data
             content_security_policy_nonce_in: A list of csp sections to include
-                a per-request none value in
+                a per-request nonce value in
             referrer_policy: A string describing the referrer policy for the
                 response.
             session_cookie_secure: Forces the session cookie to only be sent
@@ -274,6 +274,8 @@ class Talisman(object):
         headers['Feature-Policy'] = policy
 
     def _set_frame_options_headers(self, headers, options):
+        if not options['frame_options']:
+            return
         headers['X-Frame-Options'] = options['frame_options']
 
         if options['frame_options'] == ALLOW_FROM:
