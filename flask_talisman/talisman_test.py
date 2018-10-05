@@ -148,10 +148,10 @@ class TestTalismanExtension(unittest.TestCase):
         self.assertIn('image-src \'self\' example.com', csp)
 
         # string policy
-        self.talisman.content_security_policy = 'default-src example.com'
+        self.talisman.content_security_policy = 'default-src \'foo\' spam.eggs'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.headers['Content-Security-Policy'],
-                         'default-src example.com')
+                         'default-src \'foo\' spam.eggs')
 
         # no policy
         self.talisman.content_security_policy = False
@@ -160,10 +160,10 @@ class TestTalismanExtension(unittest.TestCase):
 
         # string policy at initialization
         app = flask.Flask(__name__)
-        Talisman(app, content_security_policy='default-src spam.eggs')
+        Talisman(app, content_security_policy='default-src \'foo\' spam.eggs')
         response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn(
-            'default-src spam.eggs',
+            'default-src \'foo\' spam.eggs',
             response.headers['Content-Security-Policy']
         )
 
