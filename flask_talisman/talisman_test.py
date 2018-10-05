@@ -156,6 +156,15 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertFalse('Content-Security-Policy' in response.headers)
 
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, content_security_policy='default-src spam.eggs')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn(
+            'default-src spam.eggs',
+            response.headers['Content-Security-Policy']
+        )
+
     def testContentSecurityPolicyOptionsReport(self):
         # report-only policy
         self.talisman.content_security_policy_report_only = True
@@ -249,3 +258,9 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         feature_policy = response.headers['Feature-Policy']
         self.assertTrue('fullscreen \'self\' example.com' in feature_policy)
+
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, feature_policy='vibrate \'none\'')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('vibrate \'none\'', response.headers['Feature-Policy'])

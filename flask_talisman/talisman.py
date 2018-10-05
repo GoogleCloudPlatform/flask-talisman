@@ -118,8 +118,10 @@ class Talisman(object):
 
         See README.rst for a detailed description of each option.
         """
-
-        self.feature_policy = feature_policy.copy()
+        if isinstance(feature_policy, dict):
+            self.feature_policy = feature_policy.copy()
+        else:
+            self.feature_policy = feature_policy
         self.force_https = force_https
         self.force_https_permanent = force_https_permanent
 
@@ -134,7 +136,10 @@ class Talisman(object):
         self.strict_transport_security_include_subdomains = \
             strict_transport_security_include_subdomains
 
-        self.content_security_policy = content_security_policy.copy()
+        if isinstance(content_security_policy, dict):
+            self.content_security_policy = content_security_policy.copy()
+        else:
+            self.content_security_policy = content_security_policy
         self.content_security_policy_report_uri = \
             content_security_policy_report_uri
         self.content_security_policy_report_only = \
