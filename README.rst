@@ -13,7 +13,7 @@ The default configuration:
 -  Enables `HTTP Strict Transport
    Security <https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security>`_.
 -  Sets Flask's session cookie to ``secure``, so it will never be set if
-   you application is somehow accessed via a non-secure connection.
+   your application is somehow accessed via a non-secure connection.
 -  Sets Flask's session cookie to ``httponly``, preventing JavaScript
    from being able to access its content. CSRF via Ajax uses a separate
    cookie and should be unaffected.
