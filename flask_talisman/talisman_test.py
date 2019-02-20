@@ -135,8 +135,7 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertIn('default-src \'self\'', csp)
-        self.assertIn('image-src *', csp)
+        self.assertEqual(csp, "default-src 'self'; image-src *")
 
         self.talisman.content_security_policy['image-src'] = [
             '\'self\'',
