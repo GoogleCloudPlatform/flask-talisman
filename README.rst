@@ -278,6 +278,22 @@ The nonce needs to be added to the script tag in the template:
 Note that the CSP directive (`script-src` in the example) to which the `nonce-...`
 source should be added needs to be defined explicitly.
 
+Example 7
+~~~~~~~~~
+
+A web site adminstrator wants to override the CSP directives via an
+environment variable which doesn't support specifying the policy as
+a Python dictionary, e.g.:
+
+.. code:: bash
+
+    export APP_CSP_DIRECTIVES="default-src 'self'; image-src *"
+    ./app/start.sh
+
+As you can see above the policy can be defined simply just like the official
+specification requires the HTTP header to be set: As a semicolon separated
+list of individual CSP directives.
+
 Feature Policy
 --------------
 
