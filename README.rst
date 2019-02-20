@@ -287,8 +287,20 @@ a Python dictionary, e.g.:
 
 .. code:: bash
 
-    export APP_CSP_DIRECTIVES="default-src 'self'; image-src *"
-    ./app/start.sh
+    export CSP_DIRECTIVES="default-src 'self'; image-src *"
+    python app.py
+
+Then in the app code you can read the CSP directives from the environment:
+
+.. code:: python
+
+    import os
+    from flask_talisman import Talisman, DEFAULT_CSP_POLICY
+
+    talisman = Talisman(
+        app,
+        content_security_policy=os.environ.get("CSP_DIRECTIVES", DEFAULT_CSP_POLICY),
+    )
 
 As you can see above the policy can be defined simply just like the official
 specification requires the HTTP header to be set: As a semicolon separated
