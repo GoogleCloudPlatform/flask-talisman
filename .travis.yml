@@ -4,20 +4,20 @@ sudo: false
 matrix:
   include:
   - python: 3.6
-    env: TOXENV=lint
+    env: NOXSESSION=lint
   - python: 3.6
-    env: TOXENV=py27
+    env: NOXSESSION=tests-2.7
   - python: 3.4
-    env: TOXENV=py34
+    env: NOXSESSION=tests-3.4
   - python: 3.5
-    env: TOXENV=py35
+    env: NOXSESSION=tests-3.5
   - python: 3.6
-    env: TOXENV=py36
+    env: NOXSESSION=tests-3.6
 
 install:
-- pip install tox coveralls
+- pip install nox coveralls
 
-script: tox -v
+script: nox
 
 after_success:
 - coveralls
