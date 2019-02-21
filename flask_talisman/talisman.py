@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from collections import OrderedDict
 
 import flask
 from six import iteritems, string_types
@@ -119,7 +120,7 @@ class Talisman(object):
         See README.rst for a detailed description of each option.
         """
         if isinstance(feature_policy, dict):
-            self.feature_policy = feature_policy.copy()
+            self.feature_policy = OrderedDict(feature_policy)
         else:
             self.feature_policy = feature_policy
         self.force_https = force_https
@@ -137,7 +138,7 @@ class Talisman(object):
             strict_transport_security_include_subdomains
 
         if isinstance(content_security_policy, dict):
-            self.content_security_policy = content_security_policy.copy()
+            self.content_security_policy = OrderedDict(content_security_policy)
         else:
             self.content_security_policy = content_security_policy
         self.content_security_policy_report_uri = \
@@ -241,7 +242,7 @@ class Talisman(object):
         if isinstance(policy, string_types):
             # parse the string into a policy dict
             policy_string = policy
-            policy = {}
+            policy = OrderedDict()
 
             for policy_part in policy_string.split(';'):
                 policy_parts = policy_part.strip().split(' ')
