@@ -159,7 +159,8 @@ class Talisman(object):
 
         app.jinja_env.globals['csp_nonce'] = self._get_nonce
 
-        self.legacy_content_security_policy_header = legacy_content_security_policy_header
+        self.legacy_content_security_policy_header = \
+            legacy_content_security_policy_header
 
         self.referrer_policy = referrer_policy
 
