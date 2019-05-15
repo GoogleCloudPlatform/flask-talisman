@@ -84,6 +84,19 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
+    def testXHeaderOption(self):
+        #No header X-Content-Security-Policy present
+        self.talisman.support_x_header = False
+        
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertNotIn('X-Content-Security-Policy', response.headers)
+
+        #Header X-Content-Security-Policy present
+        self.talisman.support_x_header = True
+        
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('X-Content-Security-Policy', response.headers)
+
     def testHstsOptions(self):
         self.talisman.force_ssl = False
 
