@@ -86,13 +86,13 @@ class TestTalismanExtension(unittest.TestCase):
 
     def testLegacyContentSecurityPolicyHeaderOption(self):
         # No header X-Content-Security-Policy present
-        self.talisman.support_x_header = False
+        self.talisman.legacy_content_security_policy_header = False
 
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertNotIn('X-Content-Security-Policy', response.headers)
 
         # Header X-Content-Security-Policy present
-        self.talisman.support_x_header = True
+        self.talisman.legacy_content_security_policy_header = True
 
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('X-Content-Security-Policy', response.headers)
