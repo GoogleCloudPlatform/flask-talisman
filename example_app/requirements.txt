@@ -1,5 +1,5 @@
-Flask==0.10.1
-gunicorn==19.3.0
-flask-seasurf==0.2.1
+Flask
+gunicorn
+flask-seasurf
 six>=1.9.0
 flask-talisman
