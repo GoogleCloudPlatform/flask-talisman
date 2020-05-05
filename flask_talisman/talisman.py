@@ -26,6 +26,7 @@ DEFAULT_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 DEFAULT_CSP_POLICY = {
     'default-src': '\'self\'',
+    'object-src': '\'none\'',
 }
 
 GOOGLE_CSP_POLICY = {
@@ -39,6 +40,7 @@ GOOGLE_CSP_POLICY = {
     # Used by generated code from http://www.google.com/fonts
     'style-src': '\'self\' ajax.googleapis.com fonts.googleapis.com '
                  '*.gstatic.com',
+    'object-src': '\'none\'',
     'default-src': '\'self\' *.gstatic.com',
 }
 
