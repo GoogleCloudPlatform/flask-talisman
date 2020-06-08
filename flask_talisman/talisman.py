@@ -364,7 +364,7 @@ class Talisman(object):
 
 try:
     import secrets
-    
+
     def get_random_string(length):
         # Note token_urlsafe returns a 'length'-byte string which is then
         # base64 encoded so is longer than length, so only return last
