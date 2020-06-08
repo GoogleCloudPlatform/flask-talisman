@@ -364,10 +364,12 @@ class Talisman(object):
 
 try:
     import secrets
+    
     def get_random_string(length):
-        # Note token_urlsafe returns a length-byte string which is then base64 encoded
-        # so is longer than length, so only return last length characters.
-        return secrets.token_urlsafe(length)[:length] # pragma: no cover
+        # Note token_urlsafe returns a 'length'-byte string which is then
+        # base64 encoded so is longer than length, so only return last
+        # 'length' characters.
+        return secrets.token_urlsafe(length)[:length]  # pragma: no cover
 
 except ImportError:  # pragma: no cover
     import random
