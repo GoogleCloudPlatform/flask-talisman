@@ -23,6 +23,6 @@ __all__ = (
     'DENY',
     'GOOGLE_CSP_POLICY',
     'SAMEORIGIN',
-    'NONE_LENGTH'
+    'NONE_LENGTH',
     'Talisman',
 )
