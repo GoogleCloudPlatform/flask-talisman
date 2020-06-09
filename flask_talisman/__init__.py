@@ -14,7 +14,7 @@
 
 from .talisman import (
     ALLOW_FROM, DEFAULT_CSP_POLICY, DEFAULT_FEATURE_POLICY, DENY,
-    GOOGLE_CSP_POLICY, SAMEORIGIN, Talisman)
+    GOOGLE_CSP_POLICY, NONCE_LENGTH, SAMEORIGIN, Talisman)
 
 __all__ = (
     'ALLOW_FROM',
@@ -22,6 +22,7 @@ __all__ = (
     'DEFAULT_FEATURE_POLICY',
     'DENY',
     'GOOGLE_CSP_POLICY',
+    'NONCE_LENGTH',
     'SAMEORIGIN',
     'Talisman',
 )

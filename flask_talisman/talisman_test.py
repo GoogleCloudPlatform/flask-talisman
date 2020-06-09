@@ -17,7 +17,7 @@ from __future__ import absolute_import
 import unittest
 
 import flask
-from flask_talisman import ALLOW_FROM, DENY, Talisman
+from flask_talisman import ALLOW_FROM, DENY, NONCE_LENGTH, Talisman
 from six import iteritems
 
 
@@ -229,6 +229,7 @@ class TestTalismanExtension(unittest.TestCase):
                 flask.request.csp_nonce,
                 response.data.decode("utf-8")
             )
+            self.assertEqual(len(flask.request.csp_nonce), NONCE_LENGTH)
 
     def testDecorator(self):
         @self.app.route('/nocsp')
