@@ -94,7 +94,7 @@ Options
    `Content Security Policy`_ section.
 -  ``content_security_policy_nonce_in``, default ``[]``. Adds a per-request nonce
    value to the flask request object and also to the specified CSP header section.
-   I.e. ['script-src', 'style-src']
+   I.e. ``['script-src', 'style-src']``
 -  ``content_security_policy_report_only``, default ``False``, whether to set
    the CSP header as "report-only" (as `Content-Security-Policy-Report-Only`)
    to ease deployment by disabling the policy enforcement by the browser,
