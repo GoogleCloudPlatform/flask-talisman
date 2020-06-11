@@ -54,8 +54,10 @@ class TestTalismanExtension(unittest.TestCase):
             'max-age=31556926; includeSubDomains',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
-            'Content-Security-Policy': 'default-src \'self\'',
-            'X-Content-Security-Policy': 'default-src \'self\'',
+            'Content-Security-Policy':
+            'default-src \'self\'; object-src \'none\'',
+            'X-Content-Security-Policy':
+            'default-src \'self\'; object-src \'none\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
 
@@ -148,7 +150,8 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertEqual(csp, "default-src 'self'; image-src *")
+        self.assertEqual(
+            csp, "default-src 'self'; object-src \'none\'; image-src *")
 
         self.talisman.content_security_policy['image-src'] = [
             '\'self\'',
