@@ -74,7 +74,6 @@ class Talisman(object):
             content_security_policy_report_uri=None,
             content_security_policy_report_only=False,
             content_security_policy_nonce_in=None,
-            legacy_content_security_policy_header=True,
             referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True):
@@ -109,7 +108,6 @@ class Talisman(object):
                 the POST data
             content_security_policy_nonce_in: A list of csp sections to include
                 a per-request nonce value in
-            legacy_content_security_policy_header: Whether to add X-CSP header
             referrer_policy: A string describing the referrer policy for the
                 response.
             session_cookie_secure: Forces the session cookie to only be sent
@@ -158,9 +156,6 @@ class Talisman(object):
         )
 
         app.jinja_env.globals['csp_nonce'] = self._get_nonce
-
-        self.legacy_content_security_policy_header = \
-            legacy_content_security_policy_header
 
         self.referrer_policy = referrer_policy
 
@@ -310,9 +305,6 @@ class Talisman(object):
             csp_header += '-Report-Only'
 
         headers[csp_header] = policy
-        # IE 10-11, Older Firefox.
-        if self.legacy_content_security_policy_header:
-            headers['X-' + csp_header] = policy
 
     def _set_hsts_headers(self, headers):
         criteria = [

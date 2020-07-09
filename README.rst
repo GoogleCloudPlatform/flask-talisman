@@ -103,7 +103,6 @@ Options
 -  ``content_security_policy_report_uri``, default ``None``, a string
    indicating the report URI used for `CSP violation reports
    <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_CSP_violation_reports>`_
-- ``legacy_content_security_policy_header``, default ``True``, Whether to add X-CSP header
 -  ``referrer_policy``, default ``strict-origin-when-cross-origin``, a string
    that sets the Referrer Policy header to send a full URL when performing a same-origin
    request, only send the origin of the document to an equally secure destination

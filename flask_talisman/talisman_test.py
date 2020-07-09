@@ -55,7 +55,6 @@ class TestTalismanExtension(unittest.TestCase):
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
             'Content-Security-Policy': 'default-src \'self\'',
-            'X-Content-Security-Policy': 'default-src \'self\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
 
@@ -83,19 +82,6 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.force_https = False
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-
-    def testLegacyContentSecurityPolicyHeaderOption(self):
-        # No header X-Content-Security-Policy present
-        self.talisman.legacy_content_security_policy_header = False
-
-        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertNotIn('X-Content-Security-Policy', response.headers)
-
-        # Header X-Content-Security-Policy present
-        self.talisman.legacy_content_security_policy_header = True
-
-        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
-        self.assertIn('X-Content-Security-Policy', response.headers)
 
     def testHstsOptions(self):
         self.talisman.force_ssl = False
@@ -187,13 +173,10 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('Content-Security-Policy-Report-Only', response.headers)
         self.assertIn(
-            'X-Content-Security-Policy-Report-Only', response.headers)
-        self.assertIn(
             'report-uri',
             response.headers['Content-Security-Policy-Report-Only']
         )
         self.assertNotIn('Content-Security-Policy', response.headers)
-        self.assertNotIn('X-Content-Security-Policy', response.headers)
 
         override_report_uri = 'https://report-uri.io/'
         self.talisman.content_security_policy = {
