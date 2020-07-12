@@ -23,7 +23,8 @@ The default configuration:
    `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`_.
 -  Sets `X-XSS-Protection
    <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection>`_
-   to enable a cross site scripting filter for IE.
+   to enable a cross site scripting filter for IE and Safari (note Chrome has
+   removed this and Firefox never supported it).
 -  Sets `X-Content-Type-Options
    <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options>`_
    to prevent content type sniffing.
@@ -311,9 +312,9 @@ The default feature policy is empty, as this is the default expected behaviour.
 Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
 but is `supported in some form in most browsers
 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
-Please note this has been renamed Permissions Policy in the latest draft by at this
-writing, browsers and this extension only supports the Feature-Policy HTTP
-Header name.
+Please note this has been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`
+in the latest draft by at this writing, browsers and this extension only
+supports the Feature-Policy HTTP Header name.
 
 Geolocation Example
 ~~~~~~~~~~~~~~~~~~~
