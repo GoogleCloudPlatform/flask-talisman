@@ -27,9 +27,6 @@ The default configuration:
 -  Sets `X-Content-Type-Options
    <https://msdn.microsoft.com/library/gg622941(v=vs.85).aspx>`_ to prevents
    content type sniffing for IE >= 9.
--  Sets `X-Download-Options
-   <https://msdn.microsoft.com/library/jj542450(v=vs.85).aspx>`_ to prevent
-   file downloads opening for IE >= 8.
 -  Sets a strict `Content Security
    Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`__
    of ``default-src: 'self'``. This is intended to almost completely
@@ -70,7 +67,7 @@ There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-
 Options
 -------
 
--  ``feature_policy``, default ``{}``, see the `Feature Policy` section.
+-  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
 -  ``force_https``, default ``True``, forces all non-debug connects to
    ``https``.
 -  ``force_https_permanent``, default ``False``, uses ``301`` instead of
