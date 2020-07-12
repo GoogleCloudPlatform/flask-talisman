@@ -111,7 +111,7 @@ Options
    cookie to ``httponly``, preventing it from being read by JavaScript.
 -  ``force_file_save``, default ``False``, whether to set the
    `X-Download-Options <https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/jj542450(v=vs.85)?redirectedfrom=MSDN>`_
-   header to ``noopen` to prevent IE >= 8 to from opening file downloads
+   header to ``noopen`` to prevent IE >= 8 to from opening file downloads
    directly and only save them instead.
 
 Per-view options
