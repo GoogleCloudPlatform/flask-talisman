@@ -312,7 +312,7 @@ The default feature policy is empty, as this is the default expected behaviour.
 Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
 but is `supported in some form in most browsers
 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
-Please note this has been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`
+Please note this has been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
 in the latest draft by at this writing, browsers and this extension only
 supports the Feature-Policy HTTP Header name.
 
