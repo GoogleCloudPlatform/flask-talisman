@@ -22,11 +22,11 @@ The default configuration:
    to ``SAMEORIGIN`` to avoid
    `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`_.
 -  Sets `X-XSS-Protection
-   <http://msdn.microsoft.com/en-us/library/dd565647(v=vs.85).aspx>`_ to enable
-   a cross site scripting filter for IE/Chrome.
+   <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection>`_
+   to enable a cross site scripting filter for IE.
 -  Sets `X-Content-Type-Options
-   <https://msdn.microsoft.com/library/gg622941(v=vs.85).aspx>`_ to prevents
-   content type sniffing for IE >= 9.
+   <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options>`_
+   to prevent content type sniffing.
 -  Sets a strict `Content Security
    Policy <https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy>`__
    of ``default-src: 'self'``. This is intended to almost completely
@@ -109,8 +109,9 @@ Options
 -  ``session_cookie_http_only``, default ``True``, set the session
    cookie to ``httponly``, preventing it from being read by JavaScript.
 -  ``force_file_save``, default ``False``, whether to set the
-   ``X-Download-Options`` header to ``noopen`` to prevent IE >= 8 to from
-   opening file downloads directly and only save them instead
+   `X-Download-Options <https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/jj542450(v=vs.85)?redirectedfrom=MSDN>`_
+   header to ``noopen` to prevent IE >= 8 to from opening file downloads
+   directly and only save them instead.
 
 Per-view options
 ~~~~~~~~~~~~~~~~
@@ -308,7 +309,11 @@ Feature Policy
 
 The default feature policy is empty, as this is the default expected behaviour.
 Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
-and supported in Chrome and Safari.
+but is `supported in some form in most browsers
+<https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
+Please note this has been renamed Permissions Policy in the latest draft by at this
+writing, browsers and this extension only supports the Feature-Policy HTTP
+Header name.
 
 Geolocation Example
 ~~~~~~~~~~~~~~~~~~~
