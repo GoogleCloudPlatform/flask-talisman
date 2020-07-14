@@ -185,7 +185,8 @@ class Talisman(object):
         view_options.setdefault(
             'content_security_policy', self.content_security_policy)
         view_options.setdefault(
-            'content_security_policy_nonce_in', self.content_security_policy_nonce_in)
+            'content_security_policy_nonce_in',
+            self.content_security_policy_nonce_in)
         view_options.setdefault(
             'feature_policy', self.feature_policy
         )
@@ -257,9 +258,8 @@ class Talisman(object):
                 content = ' '.join(content)
             policy_part = '{} {}'.format(section, content)
 
-            if (
-                    hasattr(flask.request, 'csp_nonce') and
-                    section in local_options['content_security_policy_nonce_in']):
+            if (hasattr(flask.request, 'csp_nonce') and
+                section in local_options['content_security_policy_nonce_in']):
                 policy_part += " 'nonce-{}'".format(flask.request.csp_nonce)
 
             policies.append(policy_part)
