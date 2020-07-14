@@ -241,6 +241,7 @@ class Talisman(object):
         return getattr(flask.request, 'csp_nonce', '')
 
     def _parse_policy(self, policy):
+        local_options = self._get_local_options()
         if isinstance(policy, string_types):
             # parse the string into a policy dict
             policy_string = policy
@@ -258,7 +259,7 @@ class Talisman(object):
 
             if (
                     hasattr(flask.request, 'csp_nonce') and
-                    section in self.content_security_policy_nonce_in):
+                    section in local_options['content_security_policy_nonce_in']):
                 policy_part += " 'nonce-{}'".format(flask.request.csp_nonce)
 
             policies.append(policy_part)
