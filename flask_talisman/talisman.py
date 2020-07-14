@@ -185,6 +185,8 @@ class Talisman(object):
         view_options.setdefault(
             'content_security_policy', self.content_security_policy)
         view_options.setdefault(
+            'content_security_policy_nonce_in', self.content_security_policy_nonce_in)
+        view_options.setdefault(
             'feature_policy', self.feature_policy
         )
 
@@ -231,7 +233,7 @@ class Talisman(object):
         local_options = self._get_local_options()
         if (
                 local_options['content_security_policy'] and
-                self.content_security_policy_nonce_in and
+                local_options['content_security_policy_nonce_in'] and
                 not getattr(flask.request, 'csp_nonce', None)):
             flask.request.csp_nonce = get_random_string(NONCE_LENGTH)
 
@@ -331,8 +333,9 @@ class Talisman(object):
         """Use talisman as a decorator to configure options for a particular
         view.
 
-        Only frame_options, frame_options_allow_from, and
-        content_security_policy can be set on a per-view basis.
+        Only force_https, frame_options, frame_options_allow_from,
+        content_security_policy, content_security_policy_nonce_in
+        and feature_policy can be set on a per-view basis.
 
         Example:
 
