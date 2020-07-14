@@ -76,7 +76,8 @@ class Talisman(object):
             content_security_policy_nonce_in=None,
             referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
-            session_cookie_http_only=True):
+            session_cookie_http_only=True,
+            session_cookie_samesite="Lax"):
         """
         Initialization.
 
@@ -114,6 +115,7 @@ class Talisman(object):
                 over https. Disabled in debug mode.
             session_cookie_http_only: Prevents JavaScript from reading the
                 session cookie.
+            session_cookie_samesite: Sets samesite parameter on session cookie
             force_file_save: Prevents the user from opening a file download
                 directly on >= IE 8
 
@@ -164,6 +166,8 @@ class Talisman(object):
         if session_cookie_http_only:
             app.config['SESSION_COOKIE_HTTPONLY'] = True
 
+        app.config['SESSION_COOKIE_SAMESITE'] = session_cookie_samesite
+                
         self.force_file_save = force_file_save
 
         self.app = app
@@ -199,6 +203,7 @@ class Talisman(object):
         if self.session_cookie_secure:
             if not self.app.debug:
                 self.app.config['SESSION_COOKIE_SECURE'] = True
+        
 
         criteria = [
             self.app.debug,
