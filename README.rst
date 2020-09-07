@@ -339,9 +339,11 @@ Permissions Policy
 Feature Policy has been split into Permissions Policy and Document Policy but
 at this writing `browser support of Permissions Policy is very limited <https://caniuse.com/permissions-policy>`_,
 and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+Permission Policy support is included in Talisman for when this becomes more
+widely supported.
 
 The default permissions policy is empty, as this is the default expected behaviour.
-Note that the Permission Policy is still a `draft <https://www.w3.org/TR/permissions-policy/>`_.
+Note that the Permission Policy is still an `Editor's Draft <https://www.w3.org/TR/permissions-policy/>`_.
 
 Permission Policy can be set either using a dictionary, or using a string.
 
@@ -371,9 +373,11 @@ Document Policy
 Feature Policy has been split into Permissions Policy and Document Policy but
 at this writing `browser support of Document Policy is very limited <https://caniuse.com/document-policy>`_,
 and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+Document Policy support is included in Talisman for when this becomes more
+widely supported.
 
 The default permissions policy is empty, as this is the default expected behaviour.
-Note that the Document Policy is still an `editors draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
+Note that the Document Policy is still an `Editors Draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
 
 Document Policy can be set either using a dictionary, or using a string.
 
