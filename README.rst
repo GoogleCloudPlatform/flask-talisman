@@ -310,15 +310,16 @@ list of individual CSP directives.
 Feature Policy
 --------------
 
-The default feature policy is empty, as this is the default expected behaviour.
-Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
-but is `supported in some form in most browsers
-<https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
 Please note this has largely been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
 in the latest draft and some features are likely to move to Document Policy.
-At this writing, browsers only supports the Feature-Policy HTTP Header name.
+At this writing, browsers only supports the ``Feature-Policy`` HTTP Header name.
 See the `Permissions Policy`_ and `Document Policy`_ sections should you wish
 to set these.
+
+The default feature policy is empty, as this is the default expected behaviour.
+Note that the Feature Policy is an `Editor's Draft <https://wicg.github.io/feature-policy/>`_
+but is `supported in some form in most browsers
+<https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
 
 Geolocation Example
 ~~~~~~~~~~~~~~~~~~~
@@ -336,7 +337,9 @@ Permissions Policy
 ------------------
 
 Feature Policy has been split into Permissions Policy and Document Policy but
-at this writing `browser support of Permissions Policy is very limited <https://caniuse.com/permissions-policy>`_.
+at this writing `browser support of Permissions Policy is very limited <https://caniuse.com/permissions-policy>`_,
+and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+
 The default permissions policy is empty, as this is the default expected behaviour.
 Note that the Permission Policy is still a `draft <https://www.w3.org/TR/permissions-policy/>`_.
 
@@ -366,7 +369,9 @@ Document Policy
 ---------------
 
 Feature Policy has been split into Permissions Policy and Document Policy but
-at this writing `browser support of Document Policy is very limited <https://caniuse.com/document-policy>`_.
+at this writing `browser support of Document Policy is very limited <https://caniuse.com/document-policy>`_,
+and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+
 The default permissions policy is empty, as this is the default expected behaviour.
 Note that the Document Policy is still an `editors draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
 
