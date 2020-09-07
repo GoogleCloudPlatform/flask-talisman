@@ -283,7 +283,7 @@ class TestTalismanExtension(unittest.TestCase):
         Talisman(app, permissions_policy='vibrate=(), geolocation=()')
         response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('vibrate=(), geolocation=()',
-                        response.headers['Permissions-Policy'])
+                      response.headers['Permissions-Policy'])
 
     def testDocumentPolicy(self):
         self.talisman.document_policy['oversized-images'] = '?0'
@@ -296,11 +296,11 @@ class TestTalismanExtension(unittest.TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         document_policy = response.headers['Document-Policy']
         self.assertIn('oversized-images=?0, document-write=?0',
-                        document_policy)
+                      document_policy)
 
         # string policy at initialization
         app = flask.Flask(__name__)
         Talisman(app, document_policy='oversized-images=?0, document-write=?0')
         response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('oversized-images=?0, document-write=?0',
-                       response.headers['Document-Policy'])
+                      response.headers['Document-Policy'])
