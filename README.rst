@@ -317,7 +317,7 @@ See the `Permissions Policy`_ and `Document Policy`_ sections should you wish
 to set these.
 
 The default feature policy is empty, as this is the default expected behaviour.
-Note that the Feature Policy is an `Editor's Draft <https://wicg.github.io/feature-policy/>`_
+Note that the `Feature Policy is an Editor's Draft <https://wicg.github.io/feature-policy/>`_
 but is `supported in some form in most browsers
 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
 
@@ -343,7 +343,7 @@ Permission Policy support is included in Talisman for when this becomes more
 widely supported.
 
 The default permissions policy is empty, as this is the default expected behaviour.
-Note that the Permission Policy is still an `Editor's Draft <https://www.w3.org/TR/permissions-policy/>`_.
+Note that the `Permission Policy is still an Editor's Draft <https://www.w3.org/TR/permissions-policy/>`_.
 
 Permission Policy can be set either using a dictionary, or using a string.
 
@@ -377,7 +377,7 @@ Document Policy support is included in Talisman for when this becomes more
 widely supported.
 
 The default permissions policy is empty, as this is the default expected behaviour.
-Note that the Document Policy is still an `Editors Draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
+Note that the `Document Policy is still an Editors Draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
 
 Document Policy can be set either using a dictionary, or using a string.
 
