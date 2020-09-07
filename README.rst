@@ -397,8 +397,8 @@ Forbid oversized-images using string syntax:
 
 .. code:: python
 
-    permission_policy = 'geolocation=(), microphone=()'
-    talisman = Talisman(app, permission_policy=permission_policy)
+    document_policy = 'oversized-images=?0'
+    talisman = Talisman(app, document_policy=document_policy)
 
 Disclaimer
 ----------
