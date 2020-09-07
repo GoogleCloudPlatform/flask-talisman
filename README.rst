@@ -68,7 +68,6 @@ There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-
 Options
 -------
 
--  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
 -  ``force_https``, default ``True``, forces all non-debug connects to
    ``https``.
 -  ``force_https_permanent``, default ``False``, uses ``301`` instead of
@@ -105,6 +104,9 @@ Options
    that sets the Referrer Policy header to send a full URL when performing a same-origin
    request, only send the origin of the document to an equally secure destination
    (HTTPS->HTTPS), and send no header to a less secure destination (HTTPS->HTTP).
+-  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
+-  ``permissions_policy``, default ``{}``, see the `Permissions Policy`_ section.
+-  ``document_policy``, default ``{}``, see the `Document Policy`_ section.
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
@@ -312,9 +314,11 @@ The default feature policy is empty, as this is the default expected behaviour.
 Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
 but is `supported in some form in most browsers
 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
-Please note this has been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
-in the latest draft by at this writing, browsers and this extension only
-supports the Feature-Policy HTTP Header name.
+Please note this has largely been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
+in the latest draft and some features are likely to move to Document Policy.
+At this writing, browsers only supports the Feature-Policy HTTP Header name.
+See the `Permissions Policy`_ and `Document Policy`_ sections should you wish
+to set these.
 
 Geolocation Example
 ~~~~~~~~~~~~~~~~~~~
@@ -327,6 +331,65 @@ Disable access to Geolocation interface.
         'geolocation': '\'none\''
     }
     talisman = Talisman(app, feature_policy=feature_policy)
+
+Permissions Policy
+------------------
+
+Feature Policy has been split into Permissions Policy and Document Policy but
+at this writing `browser support of Permissions Policy is very limited https://caniuse.com/permissions-policy`_.
+The default permissions policy is empty, as this is the default expected behaviour.
+Note that the Permission Policy is still a `draft https://www.w3.org/TR/permissions-policy/_`.
+
+Permission Policy can be set either using a dictionary, or using a string.
+
+Geolocation and Microphone Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Disable access to Geolocation interface and Microphone using dictionary syntax
+
+.. code:: python
+
+    permission_policy = {
+        'geolocation': '()',
+        'microphone': '()'
+    }
+    talisman = Talisman(app, permission_policy=permission_policy)
+
+Disable access to Geolocation interface and Microphone using string syntax
+
+.. code:: python
+
+    permission_policy = 'geolocation=(), microphone=()'
+    talisman = Talisman(app, permission_policy=permission_policy)
+
+Document Policy
+---------------
+
+Feature Policy has been split into Permissions Policy and Document Policy but
+at this writing `browser support of Document Policy is very limited https://caniuse.com/document-policy`_.
+The default permissions policy is empty, as this is the default expected behaviour.
+Note that the Document Policy is still an `editors draft https://w3c.github.io/webappsec-feature-policy/document-policy.html`_.
+
+Document Policy can be set either using a dictionary, or using a string.
+
+Oversized-Images Example
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Forbid oversized-images using dictionary syntax:
+
+.. code:: python
+
+    document_policy = {
+        'oversized-images': '?0'
+    }
+    talisman = Talisman(app, document_policy=document_policy)
+
+Forbid oversized-images using string syntax:
+
+.. code:: python
+
+    permission_policy = 'geolocation=(), microphone=()'
+    talisman = Talisman(app, permission_policy=permission_policy)
 
 Disclaimer
 ----------

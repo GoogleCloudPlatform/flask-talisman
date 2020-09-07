@@ -262,3 +262,40 @@ class TestTalismanExtension(unittest.TestCase):
         Talisman(app, feature_policy='vibrate \'none\'')
         response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('vibrate \'none\'', response.headers['Feature-Policy'])
+
+    def testPermissionsPolicy(self):
+        self.talisman.permissions_policy['geolocation'] = '()'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        permissions_policy = response.headers['Permissions-Policy']
+        self.assertIn('geolocation=()', permissions_policy)
+
+        self.talisman.permissions_policy['geolocation'] = '()'
+        self.talisman.permissions_policy['fullscreen'] = '(self, "https://example.com")'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        permissions_policy = response.headers['Permissions-Policy']
+        self.assertIn('geolocation=(), fullscreen=(self, "https://example.com")', permissions_policy)
+
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, permissions_policy='vibrate=(), geolocation=()')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('vibrate=(), geolocation=()', response.headers['Permissions-Policy'])
+
+    def testDocumentPolicy(self):
+        self.talisman.document_policy['oversized-images'] = '?0'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers['Document-Policy']
+        self.assertIn('oversized-images=?0', document_policy)
+
+        self.talisman.document_policy['oversized-images'] = '?0'
+        self.talisman.document_policy['document-write'] = '?0'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers['Document-Policy']
+        self.assertIn('oversized-images=?0, document-write=?0', document_policy)
+
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, document_policy='oversized-images=?0, document-write=?0')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('oversized-images=?0, document-write=?0', response.headers['Document-Policy'])
+
