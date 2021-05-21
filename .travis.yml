@@ -7,8 +7,6 @@ matrix:
     env: NOXSESSION=lint
   - python: 3.6
     env: NOXSESSION=tests-2.7
-  - python: 3.4
-    env: NOXSESSION=tests-3.4
   - python: 3.5
     env: NOXSESSION=tests-3.5
   - python: 3.6
