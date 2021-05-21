@@ -114,6 +114,7 @@ Options
    header to ``noopen`` to prevent IE >= 8 to from opening file downloads
    directly and only save them instead.
 -  ``x_content_type_options``, default ``True``, Protects against MIME sniffing vulnerabilities.
+-  ``x_xss_protection``, default ``True``, Protects against cross-site scripting (XSS) attacks.
    
 
 Per-view options
