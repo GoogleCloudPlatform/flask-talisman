@@ -293,7 +293,7 @@ class Talisman(object):
                 options['frame_options_allow_from'])
 
     def _set_content_security_policy_headers(self, headers, options):
-        if self.x_xxs_protection:
+        if self.x_xss_protection:
             headers['X-XSS-Protection'] = '1; mode=block'
 
         if self.x_content_type_options:
