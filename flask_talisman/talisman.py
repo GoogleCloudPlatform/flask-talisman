@@ -167,7 +167,7 @@ class Talisman(object):
             app.config['SESSION_COOKIE_HTTPONLY'] = True
 
         self.force_file_save = force_file_save
-        
+
         self.x_content_type_options = x_content_type_options
 
         self.app = app
@@ -289,7 +289,7 @@ class Talisman(object):
 
     def _set_content_security_policy_headers(self, headers, options):
         headers['X-XSS-Protection'] = '1; mode=block'
-        
+
         if self.x_content_type_options:
             headers['X-Content-Type-Options'] = 'nosniff'
 
