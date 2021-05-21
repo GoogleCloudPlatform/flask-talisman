@@ -77,7 +77,8 @@ class Talisman(object):
             referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True,
-            x_content_type_options=True):
+            x_content_type_options=True,
+            x_xss_protection=True):
         """
         Initialization.
 
@@ -118,6 +119,8 @@ class Talisman(object):
             force_file_save: Prevents the user from opening a file download
                 directly on >= IE 8
             x_content_type_options: Prevents MIME type sniffing
+            x_xss_protection: Prevents the page from loading when the browser
+                detects reflected cross-site scripting attacks
 
         See README.rst for a detailed description of each option.
         """
@@ -169,6 +172,8 @@ class Talisman(object):
         self.force_file_save = force_file_save
 
         self.x_content_type_options = x_content_type_options
+
+        self.x_xss_protection = x_xss_protection
 
         self.app = app
 
@@ -288,7 +293,8 @@ class Talisman(object):
                 options['frame_options_allow_from'])
 
     def _set_content_security_policy_headers(self, headers, options):
-        headers['X-XSS-Protection'] = '1; mode=block'
+        if self.x_xxs_protection:
+            headers['X-XSS-Protection'] = '1; mode=block'
 
         if self.x_content_type_options:
             headers['X-Content-Type-Options'] = 'nosniff'
