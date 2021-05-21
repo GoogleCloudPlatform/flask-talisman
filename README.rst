@@ -113,6 +113,9 @@ Options
    `X-Download-Options <https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/jj542450(v=vs.85)?redirectedfrom=MSDN>`_
    header to ``noopen`` to prevent IE >= 8 to from opening file downloads
    directly and only save them instead.
+-  ``x_content_type_options``, default ``True``, Protects against MIME sniffing vulnerabilities.
+-  ``x_xss_protection``, default ``True``, Protects against cross-site scripting (XSS) attacks.
+   
 
 Per-view options
 ~~~~~~~~~~~~~~~~
