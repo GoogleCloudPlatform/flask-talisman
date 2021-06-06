@@ -28,10 +28,10 @@ setup(
     description='HTTP security headers for Flask.',
     long_description=long_description,
 
-    url='https://github.com/GoogleCloudPlatform/flask-talisman',
+    url='https://github.com/wntrblm/flask-talisman',
 
-    author='Thea Flowers',
-    author_email='theaflowers@google.com',
+    author='Alethea Katherine Flowers',
+    author_email='me@thea.codes',
 
     license='Apache Software License',
 

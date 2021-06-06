@@ -1,7 +1,7 @@
 Talisman: HTTP security headers for Flask
 =========================================
 
-|Build Status| |Coverage Status| |PyPI Version|
+|PyPI Version|
 
 Talisman is a small Flask extension that handles setting HTTP headers
 that can help protect against a few common web application security
@@ -63,7 +63,7 @@ After installing, wrap your Flask app with a ``Talisman``:
     Talisman(app)
 
 
-There is also a full `Example App <https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/example_app>`_.
+There is also a full `Example App <https://github.com/wntrblm/flask-talisman/blob/master/example_app>`_.
 
 Options
 -------
@@ -331,7 +331,9 @@ Disable access to Geolocation interface.
 Disclaimer
 ----------
 
-This is not an official Google product, experimental or otherwise.
+This code originated at Google, but is not an official Google product,
+experimental or otherwise. It was forked on June 6th, 2021 from the
+unmaintained GoogleCloudPlatform/flask-talisman.
 
 There is no silver bullet for web application security. Talisman can
 help, but security is more than just setting a few headers. Any
@@ -349,11 +351,7 @@ Licensing
 
 - Apache 2.0 - See `LICENSE`_
 
-.. _LICENSE: https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/LICENSE
-.. _CONTRIBUTING.md: https://github.com/GoogleCloudPlatform/flask-talisman/blob/master/CONTRIBUTING.md
-.. |Build Status| image:: https://travis-ci.org/GoogleCloudPlatform/flask-talisman.svg
-   :target: https://travis-ci.org/GoogleCloudPlatform/flask-talisman
-.. |Coverage Status| image:: https://coveralls.io/repos/GoogleCloudPlatform/flask-talisman/badge.svg
-   :target: https://coveralls.io/r/GoogleCloudPlatform/flask-talisman
+.. _LICENSE: https://github.com/wntrblm/flask-talisman/blob/master/LICENSE
+.. _CONTRIBUTING.md: https://github.com/wntrblm/flask-talisman/blob/master/CONTRIBUTING.md
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/flask-talisman.svg
    :target: https://pypi.python.org/pypi/flask-talisman
