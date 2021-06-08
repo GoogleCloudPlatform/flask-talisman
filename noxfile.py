@@ -1,7 +1,7 @@
 import nox
 
 
-@nox.session(python='3.6')
+@nox.session(python='3.9')
 def lint(session):
     session.install('docutils', 'pygments', 'flake8', 'flake8-import-order')
     session.install('-e', '.')
