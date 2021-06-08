@@ -28,7 +28,7 @@ jobs:
           pip install -e .
 
       - name: Check setup.py
-        run: python setup.py check --metadata --restructeredtext --strict
+        run: python setup.py check --metadata --restructuredtext --strict
 
       - name: Flake8
         run: flake8 --import-order-style=google flask_talisman
