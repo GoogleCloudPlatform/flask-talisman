@@ -1,0 +1,59 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Flask Talisman
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          pip install docutils pygments flake8 flake8-import-order
+          pip install -e .
+
+      - name: Check setup.py
+        run: python setup.py check --metadata --restructeredtext --strict
+
+      - name: Flake8
+        run: flake8 --import-order-style=google flask_talisman
+
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        pip install flask mock pytest pytest-cov
+        pip install -e .
+
+    - name: Test
+      run: |
+        pytest --cov=flask_talisman --cov-report=
+        coverage report --show-missing --fail-under=100
