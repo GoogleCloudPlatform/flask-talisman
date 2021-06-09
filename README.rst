@@ -17,6 +17,8 @@ The default configuration:
 -  Sets Flask's session cookie to ``httponly``, preventing JavaScript
    from being able to access its content. CSRF via Ajax uses a separate
    cookie and should be unaffected.
+-  Sets Flask's session cookie to ``Lax``, preventing the cookie to be leaked
+   in CSRF-prone request methods.
 -  Sets
    `X-Frame-Options <https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options>`_
    to ``SAMEORIGIN`` to avoid
@@ -113,6 +115,9 @@ Options
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
    cookie to ``httponly``, preventing it from being read by JavaScript.
+-  ``session_cookie_samesite``, default ``Lax``, set this to ``Strict`` to prevent the cookie from being sent by the browser to the target site in all cross-site browsing context, even when following a regular link.
+
+
 -  ``force_file_save``, default ``False``, whether to set the
    `X-Download-Options <https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/jj542450(v=vs.85)?redirectedfrom=MSDN>`_
    header to ``noopen`` to prevent IE >= 8 to from opening file downloads
