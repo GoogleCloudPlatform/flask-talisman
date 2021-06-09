@@ -54,12 +54,15 @@ class TestTalismanExtension(unittest.TestCase):
             'max-age=31556926; includeSubDomains',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
-            'Content-Security-Policy': 'default-src \'self\'; object-src \'none\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
 
         for key, value in iteritems(headers):
             self.assertEqual(response.headers.get(key), value)
+
+        csp = response.headers.get('Content-Security-Policy')
+        self.assertIn('default-src \'self\'', csp)
+        self.assertIn('object-src \'none\'', csp)
 
     def testForceSslOptionOptions(self):
         # HTTP request from Proxy
@@ -134,7 +137,9 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertEqual(csp, "default-src 'self'; object-src \'none\'; image-src *")
+        self.assertIn("default-src 'self';", csp)
+        self.assertIn("object-src \'none\';", csp)
+        self.assertIn("image-src *", csp)
 
         self.talisman.content_security_policy['image-src'] = [
             '\'self\'',
@@ -262,3 +267,50 @@ class TestTalismanExtension(unittest.TestCase):
         Talisman(app, feature_policy='vibrate \'none\'')
         response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertIn('vibrate \'none\'', response.headers['Feature-Policy'])
+
+    def testPermissionsPolicy(self):
+        # default disabled FLoC
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers['Permissions-Policy']
+        self.assertIn('interest-cohort=()', document_policy)
+
+        self.talisman.permissions_policy['geolocation'] = '()'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        permissions_policy = response.headers['Permissions-Policy']
+        self.assertIn('geolocation=()', permissions_policy)
+
+        self.talisman.permissions_policy['geolocation'] = '()'
+        self.talisman.permissions_policy['fullscreen'] = '(self, "https://example.com")'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        permissions_policy = response.headers['Permissions-Policy']
+        self.assertIn('geolocation=(), fullscreen=(self, "https://example.com")', permissions_policy)
+
+        # no policy
+        self.talisman.permissions_policy = {}
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers.get('Permissions-Policy')
+        self.assertEqual(None, document_policy)
+
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, permissions_policy='vibrate=(), geolocation=()')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('vibrate=(), geolocation=()', response.headers['Permissions-Policy'])
+
+    def testDocumentPolicy(self):
+        self.talisman.document_policy['oversized-images'] = '?0'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers['Document-Policy']
+        self.assertIn('oversized-images=?0', document_policy)
+
+        self.talisman.document_policy['oversized-images'] = '?0'
+        self.talisman.document_policy['document-write'] = '?0'
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        document_policy = response.headers['Document-Policy']
+        self.assertIn('oversized-images=?0, document-write=?0', document_policy)
+
+        # string policy at initialization
+        app = flask.Flask(__name__)
+        Talisman(app, document_policy='oversized-images=?0, document-write=?0')
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertIn('oversized-images=?0, document-write=?0', response.headers['Document-Policy'])

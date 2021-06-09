@@ -68,7 +68,6 @@ There is also a full `Example App <https://github.com/wntrblm/flask-talisman/blo
 Options
 -------
 
--  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
 -  ``force_https``, default ``True``, forces all non-debug connects to
    ``https``.
 -  ``force_https_permanent``, default ``False``, uses ``301`` instead of
@@ -105,6 +104,10 @@ Options
    that sets the Referrer Policy header to send a full URL when performing a same-origin
    request, only send the origin of the document to an equally secure destination
    (HTTPS->HTTPS), and send no header to a less secure destination (HTTPS->HTTP).
+-  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
+-  ``permissions_policy``, default ``{}``, see the `Permissions Policy`_ section.
+-  ``document_policy``, default ``{}``, see the `Document Policy`_ section.
+
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
@@ -118,8 +121,9 @@ Per-view options
 ~~~~~~~~~~~~~~~~
 
 Sometimes you want to change the policy for a specific view. The
-``force_https``, ``frame_options``, ``frame_options_allow_from``, and
-``content_security_policy`` options can be changed on a per-view basis.
+``force_https``, ``frame_options``, ``frame_options_allow_from``,
+`content_security_policy``, ``feature_policy``, ``permissions_policy``
+and ``document_policy`` options can be changed on a per-view basis.
 
 .. code:: python
 
@@ -305,16 +309,86 @@ As you can see above the policy can be defined simply just like the official
 specification requires the HTTP header to be set: As a semicolon separated
 list of individual CSP directives.
 
+Permissions Policy
+------------------
+
+Feature Policy has been split into Permissions Policy and Document Policy but
+at this writing `browser support of Permissions Policy is very limited <https://caniuse.com/permissions-policy>`_,
+and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+Permission Policy support is included in Talisman for when this becomes more
+widely supported.
+
+The default permissions policy is empty, as this is the default expected behaviour.
+Note that the `Permission Policy is still an Editor's Draft <https://www.w3.org/TR/permissions-policy/>`_.
+
+Permission Policy can be set either using a dictionary, or using a string.
+
+Geolocation and Microphone Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Disable access to Geolocation interface and Microphone using dictionary syntax
+
+.. code:: python
+
+    permission_policy = {
+        'geolocation': '()',
+        'microphone': '()'
+    }
+    talisman = Talisman(app, permission_policy=permission_policy)
+
+Disable access to Geolocation interface and Microphone using string syntax
+
+.. code:: python
+
+    permission_policy = 'geolocation=(), microphone=()'
+    talisman = Talisman(app, permission_policy=permission_policy)
+
+Document Policy
+---------------
+
+Feature Policy has been split into Permissions Policy and Document Policy but
+at this writing `browser support of Document Policy is very limited <https://caniuse.com/document-policy>`_,
+and it is recommended to still set the ``Feature-Policy`` HTTP Header.
+Document Policy support is included in Talisman for when this becomes more
+widely supported.
+
+The default permissions policy is empty, as this is the default expected behaviour.
+Note that the `Document Policy is still an Editors Draft <https://w3c.github.io/webappsec-feature-policy/document-policy.html>`_.
+
+Document Policy can be set either using a dictionary, or using a string.
+
+Oversized-Images Example
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Forbid oversized-images using dictionary syntax:
+
+.. code:: python
+
+    document_policy = {
+        'oversized-images': '?0'
+    }
+    talisman = Talisman(app, document_policy=document_policy)
+
+Forbid oversized-images using string syntax:
+
+.. code:: python
+
+    document_policy = 'oversized-images=?0'
+    talisman = Talisman(app, document_policy=document_policy)
+
 Feature Policy
 --------------
+
+Note: Feature Policy has largely been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
+in the latest draft and some features are likely to move to Document Policy.
+At this writing, most browsers support the ``Feature-Policy`` HTTP Header name._
+See the `Permissions Policy`_ and `Document Policy`_ sections should you wish
+to set these.
 
 The default feature policy is empty, as this is the default expected behaviour.
 Note that the Feature Policy is still a `draft https://wicg.github.io/feature-policy/`
 but is `supported in some form in most browsers
 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Browser_compatibility>`_.
-Please note this has been `renamed Permissions Policy <https://github.com/w3c/webappsec-feature-policy/issues/359>`_
-in the latest draft by at this writing, browsers and this extension only
-supports the Feature-Policy HTTP Header name.
 
 Geolocation Example
 ~~~~~~~~~~~~~~~~~~~
