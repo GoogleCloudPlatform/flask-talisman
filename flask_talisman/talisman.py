@@ -29,6 +29,8 @@ DEFAULT_CSP_POLICY = {
     'object-src': '\'none\'',
 }
 
+DEFAULT_SESSION_COOKIE_SAMESITE = "Lax"
+
 GOOGLE_CSP_POLICY = {
     # Fonts from fonts.google.com
     'font-src': '\'self\' themes.googleusercontent.com *.gstatic.com',
@@ -88,6 +90,7 @@ class Talisman(object):
             referrer_policy=DEFAULT_REFERRER_POLICY,
             session_cookie_secure=True,
             session_cookie_http_only=True,
+            session_cookie_samesite=DEFAULT_SESSION_COOKIE_SAMESITE,
             x_content_type_options=True,
             x_xss_protection=True):
         """
@@ -131,6 +134,7 @@ class Talisman(object):
                 over https. Disabled in debug mode.
             session_cookie_http_only: Prevents JavaScript from reading the
                 session cookie.
+            session_cookie_samesite: Sets samesite parameter on session cookie
             force_file_save: Prevents the user from opening a file download
                 directly on >= IE 8
             x_content_type_options: Prevents MIME type sniffing
@@ -191,6 +195,8 @@ class Talisman(object):
         self.referrer_policy = referrer_policy
 
         self.session_cookie_secure = session_cookie_secure
+
+        app.config['SESSION_COOKIE_SAMESITE'] = session_cookie_samesite
 
         if session_cookie_http_only:
             app.config['SESSION_COOKIE_HTTPONLY'] = True
