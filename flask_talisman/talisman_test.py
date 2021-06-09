@@ -54,12 +54,15 @@ class TestTalismanExtension(unittest.TestCase):
             'max-age=31556926; includeSubDomains',
             'X-XSS-Protection': '1; mode=block',
             'X-Content-Type-Options': 'nosniff',
-            'Content-Security-Policy': 'default-src \'self\'; object-src \'none\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
 
         for key, value in iteritems(headers):
             self.assertEqual(response.headers.get(key), value)
+
+        csp = response.headers.get('Content-Security-Policy')
+        self.assertIn('default-src \'self\'', csp)
+        self.assertIn('object-src \'none\'', csp)
 
     def testForceSslOptionOptions(self):
         # HTTP request from Proxy
@@ -134,7 +137,9 @@ class TestTalismanExtension(unittest.TestCase):
         self.talisman.content_security_policy['image-src'] = '*'
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         csp = response.headers['Content-Security-Policy']
-        self.assertEqual(csp, "default-src 'self'; object-src \'none\'; image-src *")
+        self.assertIn("default-src 'self';", csp)
+        self.assertIn("object-src \'none\';", csp)
+        self.assertIn("image-src *", csp)
 
         self.talisman.content_security_policy['image-src'] = [
             '\'self\'',
