@@ -44,6 +44,12 @@ GOOGLE_CSP_POLICY = {
     'default-src': '\'self\' *.gstatic.com',
 }
 
+DEFAULT_PERMISSIONS_POLICY = {
+}
+
+DEFAULT_DOCUMENT_POLICY = {
+}
+
 DEFAULT_FEATURE_POLICY = {
 }
 
@@ -63,6 +69,8 @@ class Talisman(object):
             self,
             app,
             feature_policy=DEFAULT_FEATURE_POLICY,
+            permissions_policy=DEFAULT_PERMISSIONS_POLICY,
+            document_policy=DEFAULT_DOCUMENT_POLICY,
             force_https=True,
             force_https_permanent=False,
             force_file_save=False,
@@ -86,6 +94,10 @@ class Talisman(object):
             app: A Flask application.
             feature_policy: A string or dictionary describing the
                 feature policy for the response.
+            permissions_policy: A string or dictionary describing the
+                permissions policy for the response.
+            document_policy: A string or dictionary describing the
+                document policy for the response.
             force_https: Redirects non-http requests to https, disabled in
                 debug mode.
             force_https_permanent: Uses 301 instead of 302 redirects.
@@ -125,6 +137,17 @@ class Talisman(object):
             self.feature_policy = OrderedDict(feature_policy)
         else:
             self.feature_policy = feature_policy
+
+        if isinstance(permissions_policy, dict):
+            self.permissions_policy = OrderedDict(permissions_policy)
+        else:
+            self.permissions_policy = permissions_policy
+
+        if isinstance(document_policy, dict):
+            self.document_policy = OrderedDict(document_policy)
+        else:
+            self.document_policy = document_policy
+
         self.force_https = force_https
         self.force_https_permanent = force_https_permanent
 
@@ -187,6 +210,10 @@ class Talisman(object):
         view_options.setdefault(
             'content_security_policy', self.content_security_policy)
         view_options.setdefault(
+            'permissions_policy', self.permissions_policy)
+        view_options.setdefault(
+            'document_policy', self.document_policy)
+        view_options.setdefault(
             'feature_policy', self.feature_policy
         )
 
@@ -222,7 +249,9 @@ class Talisman(object):
     def _set_response_headers(self, response):
         """Applies all configured headers to the given response."""
         options = self._get_local_options()
-        self._set_feature_headers(response.headers, options)
+        self._set_feature_policy_headers(response.headers, options)
+        self._set_permissions_policy_headers(response.headers, options)
+        self._set_document_policy_headers(response.headers, options)
         self._set_frame_options_headers(response.headers, options)
         self._set_content_security_policy_headers(response.headers, options)
         self._set_hsts_headers(response.headers)
@@ -239,6 +268,20 @@ class Talisman(object):
 
     def _get_nonce(self):
         return getattr(flask.request, 'csp_nonce', '')
+
+    def _parse_structured_header_policy(self, policy):
+        if isinstance(policy, str):
+            return policy
+
+        policies = []
+        for section, content in iteritems(policy):
+            policy_part = '{}={}'.format(section, content)
+
+            policies.append(policy_part)
+
+        policy = ', '.join(policies)
+
+        return policy
 
     def _parse_policy(self, policy):
         if isinstance(policy, string_types):
@@ -267,7 +310,7 @@ class Talisman(object):
 
         return policy
 
-    def _set_feature_headers(self, headers, options):
+    def _set_feature_policy_headers(self, headers, options):
         if not options['feature_policy']:
             return
 
@@ -275,6 +318,24 @@ class Talisman(object):
         policy = self._parse_policy(policy)
 
         headers['Feature-Policy'] = policy
+
+    def _set_permissions_policy_headers(self, headers, options):
+        if not options['permissions_policy']:
+            return
+
+        policy = options['permissions_policy']
+        policy = self._parse_structured_header_policy(policy)
+
+        headers['Permissions-Policy'] = policy
+
+    def _set_document_policy_headers(self, headers, options):
+        if not options['document_policy']:
+            return
+
+        policy = options['document_policy']
+        policy = self._parse_structured_header_policy(policy)
+
+        headers['Document-Policy'] = policy
 
     def _set_frame_options_headers(self, headers, options):
         if not options['frame_options']:
