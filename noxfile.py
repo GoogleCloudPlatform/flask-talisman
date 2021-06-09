@@ -1,7 +1,7 @@
 import nox
 
 
-@nox.session(python='3.6')
+@nox.session(python='3.9')
 def lint(session):
     session.install('docutils', 'pygments', 'flake8', 'flake8-import-order')
     session.install('-e', '.')
@@ -12,7 +12,7 @@ def lint(session):
     session.run('flake8', '--import-order-style=google', 'flask_talisman')
 
 
-@nox.session(python=['2.7', '3.4', '3.5', '3.6'])
+@nox.session(python=['2.7', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9'])
 def tests(session):
     """Run the test suite"""
     session.install('flask', 'mock', 'pytest', 'pytest-cov')
