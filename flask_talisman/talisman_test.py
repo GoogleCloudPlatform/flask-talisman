@@ -170,6 +170,18 @@ class TestTalismanExtension(unittest.TestCase):
             response.headers['Content-Security-Policy']
         )
 
+        # x-content-type-options disabled
+        app = flask.Flask(__name__)
+        Talisman(app, x_content_type_options=False)
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertNotIn('X-Content-Type-Options', response.headers)
+
+        # x-xss-protection disabled
+        app = flask.Flask(__name__)
+        Talisman(app, x_xss_protection=False)
+        response = app.test_client().get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertNotIn('X-XSS-Protection', response.headers)
+
     def testContentSecurityPolicyOptionsReport(self):
         # report-only policy
         self.talisman.content_security_policy_report_only = True
