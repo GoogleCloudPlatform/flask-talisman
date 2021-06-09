@@ -329,16 +329,20 @@ Geolocation and Microphone Example
 Disable access to Geolocation interface and Microphone using dictionary syntax
 
 .. code:: python
+
     permission_policy = {
         'geolocation': '()',
         'microphone': '()'
     }
     talisman = Talisman(app, permission_policy=permission_policy)
+
 Disable access to Geolocation interface and Microphone using string syntax
 
 .. code:: python
+
     permission_policy = 'geolocation=(), microphone=()'
     talisman = Talisman(app, permission_policy=permission_policy)
+
 Document Policy
 ---------------
 
@@ -359,13 +363,16 @@ Oversized-Images Example
 Forbid oversized-images using dictionary syntax:
 
 .. code:: python
+
     document_policy = {
         'oversized-images': '?0'
     }
     talisman = Talisman(app, document_policy=document_policy)
+
 Forbid oversized-images using string syntax:
 
 .. code:: python
+
     document_policy = 'oversized-images=?0'
     talisman = Talisman(app, document_policy=document_policy)
 
