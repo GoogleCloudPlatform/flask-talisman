@@ -37,6 +37,8 @@ The default configuration:
 -  Sets a strict `Referrer-Policy <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy>`_
    of ``strict-origin-when-cross-origin`` that governs which referrer information should be included with
    requests made.
+-  Disables ingest-cohort by default in the `Permissions-Policy <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy>`_ like `Drupal <https://www.drupal.org/project/drupal/issues/3209628>`_ to enhance privacy protection.
+
 
 In addition to Talisman, you **should always use a cross-site request
 forgery (CSRF) library**. It's highly recommended to use
@@ -105,9 +107,8 @@ Options
    request, only send the origin of the document to an equally secure destination
    (HTTPS->HTTPS), and send no header to a less secure destination (HTTPS->HTTP).
 -  ``feature_policy``, default ``{}``, see the `Feature Policy`_ section.
--  ``permissions_policy``, default ``{}``, see the `Permissions Policy`_ section.
+-  ``permissions_policy``, default ``{'interest-cohort': '()'}``, see the `Permissions Policy`_ section.
 -  ``document_policy``, default ``{}``, see the `Document Policy`_ section.
-
 -  ``session_cookie_secure``, default ``True``, set the session cookie
    to ``secure``, preventing it from being sent over plain ``http``.
 -  ``session_cookie_http_only``, default ``True``, set the session
