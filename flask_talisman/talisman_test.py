@@ -52,7 +52,7 @@ class TestTalismanExtension(unittest.TestCase):
             'X-Frame-Options': 'SAMEORIGIN',
             'Strict-Transport-Security':
             'max-age=31556926; includeSubDomains',
-            'X-XSS-Protection': '1; mode=block',
+            'X-XSS-Protection': '0',
             'X-Content-Type-Options': 'nosniff',
             'Content-Security-Policy': 'default-src \'self\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'

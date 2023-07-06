@@ -284,7 +284,11 @@ class Talisman(object):
                 options['frame_options_allow_from'])
 
     def _set_content_security_policy_headers(self, headers, options):
-        headers['X-XSS-Protection'] = '1; mode=block'
+        # Yes, this is correct.  The X-XSS-Protection header is deprecated and
+        # can actually introduce vulnerabilities in otherwise safe code, so lets
+        # explicit disable it.  Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+        headers['X-XSS-Protection'] = '0'
+
         headers['X-Content-Type-Options'] = 'nosniff'
 
         if self.force_file_save:
