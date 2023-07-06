@@ -21,10 +21,9 @@ The default configuration:
    `X-Frame-Options <https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options>`_
    to ``SAMEORIGIN`` to avoid
    `clickjacking <https://en.wikipedia.org/wiki/Clickjacking>`_.
--  Sets `X-XSS-Protection
+-  Explicit disables `X-XSS-Protection
    <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection>`_
-   to enable a cross site scripting filter for IE and Safari (note Chrome has
-   removed this and Firefox never supported it).
+   to avoid introducing unintended vulnerabilities in otherwise safe code.
 -  Sets `X-Content-Type-Options
    <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options>`_
    to prevent content type sniffing.
